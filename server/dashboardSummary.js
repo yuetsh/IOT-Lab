@@ -153,6 +153,12 @@ function buildAdminOverview({ companies, devices, progressByCompany, screenshots
       completed_items: device.completed_items,
       completion_percent: device.completion_percent,
       status: device.status,
+      checklist_items: device.checklist_items.map(item => ({
+        id: item.id,
+        label: item.label,
+        sort_order: item.sort_order,
+        completed: item.completed,
+      })),
     })),
   }));
 

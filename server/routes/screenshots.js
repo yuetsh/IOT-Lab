@@ -44,13 +44,13 @@ router.post('/', (req, res, next) => {
   });
 }, async (req, res) => {
   try {
-    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+    if (!req.file) return res.status(400).json({ error: '请选择要上传的文件' });
     if (!req.body.company_id) {
-      return res.status(400).json({ error: 'company_id is required' });
+      return res.status(400).json({ error: '缺少企业信息' });
     }
     const { company_id, device_id } = req.body;
     const filename = req.file.filename;
-    const original_name = req.file.originalname;
+    const original_name = Buffer.from(req.file.originalname, 'latin1').toString('utf8');
     const id = db.createScreenshot(company_id, device_id || null, filename, original_name);
     res.status(201).json({ id, filename, original_name });
   } catch (e) {

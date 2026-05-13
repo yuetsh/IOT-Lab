@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Alert, Button, Spinner } from '@heroui/react';
+import { Alert, Button, Card, CardContent, Spinner } from '@heroui/react';
 import { api } from '../api';
 import ProgressSummary from './ProgressSummary';
 import DeviceProgressGrid from './DeviceProgressGrid';
 import CompanyScreenshotPanel from './CompanyScreenshotPanel';
+import QuizPanel from './QuizPanel';
 import './student.css';
 
 export default function StudentDashboard({ company, onChangeCompany }) {
@@ -13,12 +14,9 @@ export default function StudentDashboard({ company, onChangeCompany }) {
   const [pendingIds, setPendingIds] = useState(new Set());
 
   const loadSummary = useCallback(() => {
-    setLoading(true);
-    setError('');
     return api.getCompanySummary(company.id)
       .then(setSummary)
-      .catch(e => setError(e.message))
-      .finally(() => setLoading(false));
+      .catch(e => setError(e.message));
   }, [company.id]);
 
   useEffect(() => {
@@ -99,24 +97,93 @@ export default function StudentDashboard({ company, onChangeCompany }) {
       </header>
 
       {error && (
-        <Alert className="dashboard-alert" status="danger">
+        <Alert className="dashboard-alert" color="danger">
           <Alert.Content>
             <Alert.Description>{error}</Alert.Description>
           </Alert.Content>
         </Alert>
       )}
 
-      <div className="student-dashboard-grid">
-        <ProgressSummary summary={summary} />
+      <ActivityBlock index="活动一" title="设备清单">
+        <div className="activity-grid">
+          <ProgressSummary summary={summary} />
+          <Card className="student-panel activity-guide">
+            <CardContent>
+              <p className="panel-label">操作引导</p>
+              <h2>逐项确认设备调试任务</h2>
+              <p className="panel-muted">按照设备卡片中的清单勾选完成项，教师后台会同步看到每个公司的进度。</p>
+            </CardContent>
+          </Card>
+        </div>
+        <DeviceProgressGrid devices={summary.devices || []} onToggle={handleToggle} />
+      </ActivityBlock>
+
+      <ActivityBlock index="检测一" title="设备清单理解检测">
+        <QuizPanelGrid
+          companyId={company.id}
+          quizzes={findQuizzes(summary.quizzes, 'check1')}
+          onSubmitted={loadSummary}
+        />
+      </ActivityBlock>
+
+      <ActivityBlock index="活动二" title="截图上传">
         <CompanyScreenshotPanel
           companyId={company.id}
           summary={summary}
           onUploaded={loadSummary}
         />
-      </div>
-      <DeviceProgressGrid devices={summary.devices || []} onToggle={handleToggle} />
+      </ActivityBlock>
+
+      <ActivityBlock index="检测二" title="截图提交理解检测">
+        <QuizPanelGrid
+          companyId={company.id}
+          quizzes={findQuizzes(summary.quizzes, 'check2')}
+          onSubmitted={loadSummary}
+        />
+      </ActivityBlock>
     </main>
   );
+}
+
+function ActivityBlock({ index, title, children }) {
+  return (
+    <section className="activity-block">
+      <div className="section-title-row">
+        <span className="activity-index-pill">{index}</span>
+        <h2 className="section-heading">{title}</h2>
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function QuizPanelGrid({ companyId, quizzes, onSubmitted }) {
+  return (
+    <div className="quiz-panel-grid">
+      {quizzes.map(quiz => (
+        <QuizPanel
+          key={quiz.stage_key}
+          companyId={companyId}
+          quiz={quiz}
+          onSubmitted={onSubmitted}
+        />
+      ))}
+    </div>
+  );
+}
+
+function findQuizzes(quizzes = [], activityKey) {
+  const activityQuizzes = quizzes.filter(quiz => (quiz.activity_key || quiz.stage_key) === activityKey);
+  if (activityQuizzes.length) return activityQuizzes;
+
+  return [{
+    stage_key: activityKey,
+    activity_key: activityKey,
+    title: activityKey === 'check1' ? '检测一' : '检测二',
+    prompt: '',
+    options: [],
+    submission: null,
+  }];
 }
 
 function updateSummaryItem(summary, itemId, checked) {

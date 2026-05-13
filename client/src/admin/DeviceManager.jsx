@@ -1,21 +1,23 @@
 import { useState, useEffect } from 'react';
+import { Button, Input, Accordion, AccordionItem } from '@heroui/react';
 import { api } from '../api';
 import ChecklistEditor from './ChecklistEditor';
 
 export default function DeviceManager() {
   const [devices, setDevices] = useState([]);
   const [newName, setNewName] = useState('');
-  const [expandedIds, setExpandedIds] = useState(new Set());
+  const [expandedKeys, setExpandedKeys] = useState(new Set());
+  const [uploadProgress, setUploadProgress] = useState({});
   const [error, setError] = useState('');
 
   const load = () => api.adminGetDevices()
-    .then(d => { setDevices(d); setExpandedIds(new Set(d.map(x => x.id))); })
+    .then(d => { setDevices(d); setExpandedKeys(new Set(d.map(x => String(x.id)))); })
     .catch(e => setError(e.message));
 
   useEffect(() => {
     let alive = true;
     api.adminGetDevices()
-      .then(d => { if (alive) { setDevices(d); setExpandedIds(new Set(d.map(x => x.id))); } })
+      .then(d => { if (alive) { setDevices(d); setExpandedKeys(new Set(d.map(x => String(x.id)))); } })
       .catch(e => { if (alive) setError(e.message); });
     return () => { alive = false; };
   }, []);
@@ -39,20 +41,19 @@ export default function DeviceManager() {
     } catch (e) { setError(e.message); }
   }
 
-  function toggleExpand(id) {
-    setExpandedIds(prev => {
-      const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
-      return next;
-    });
-  }
-
   async function handleVideoUpload(deviceId, file) {
     setError('');
+    setUploadProgress(prev => ({ ...prev, [deviceId]: 0 }));
     try {
-      const updated = await api.adminUploadDeviceVideo(deviceId, file);
+      const updated = await api.adminUploadDeviceVideo(deviceId, file, (pct) => {
+        setUploadProgress(prev => ({ ...prev, [deviceId]: pct }));
+      });
       setDevices(prev => prev.map(d => d.id === updated.id ? { ...d, video_filename: updated.video_filename } : d));
-    } catch (e) { setError(e.message); }
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setUploadProgress(prev => { const next = { ...prev }; delete next[deviceId]; return next; });
+    }
   }
 
   async function handleVideoDelete(deviceId) {
@@ -68,59 +69,92 @@ export default function DeviceManager() {
       <h2 className="section-title">设备管理</h2>
       {error && <p className="admin-error">{error}</p>}
       <form className="add-form" onSubmit={handleAdd}>
-        <input
-          className="admin-input"
+        <Input
           value={newName}
-          onChange={e => setNewName(e.target.value)}
+          onValueChange={setNewName}
           placeholder="输入设备名称"
+          className="max-w-xs"
         />
-        <button className="admin-btn primary" type="submit">添加设备</button>
+        <Button type="submit" color="primary">添加设备</Button>
       </form>
-      <div className="device-manager-list">
+      <Accordion
+        className="device-manager-list"
+        selectedKeys={expandedKeys}
+        onSelectionChange={setExpandedKeys}
+      >
         {devices.map(device => (
-          <div key={device.id} className="device-manager-item">
-            <div className="device-manager-row">
-              <button
-                className="device-expand-btn"
-                onClick={() => toggleExpand(device.id)}
-              >
-                {expandedIds.has(device.id) ? '▼' : '▶'} {device.name}
-                <span className="item-count">({device.checklist_items?.length || 0} 项)</span>
-              </button>
-              <button className="admin-btn danger" onClick={() => handleDelete(device.id)}>删除</button>
+          <AccordionItem
+            key={String(device.id)}
+            title={device.name}
+            subtitle={`${device.checklist_items?.length || 0} 项`}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-sm text-gray-400">{device.name} 的检查项</span>
+              <Button color="danger" size="sm" onPress={() => handleDelete(device.id)}>删除设备</Button>
             </div>
-            {expandedIds.has(device.id) && (
-              <>
-                <ChecklistEditor device={device} onUpdate={load} />
-                <div className="device-video-admin">
-                  <p className="device-video-label">设备视频</p>
-                  {device.video_filename ? (
-                    <div className="device-video-current">
-                      <span>{device.video_filename}</span>
-                      <button
-                        className="admin-btn danger sm"
-                        type="button"
-                        onClick={() => handleVideoDelete(device.id)}
-                      >
-                        删除视频
-                      </button>
+            <div className="device-content">
+              <ChecklistEditor device={device} onUpdate={load} />
+              <div className="device-video-panel">
+                <p className="device-video-label">设备视频</p>
+                {device.video_filename ? (
+                  <div className="device-video-preview">
+                    <video
+                      className="device-video-thumb"
+                      src={`/uploads/${device.video_filename}`}
+                      controls
+                      preload="metadata"
+                    />
+                    {uploadProgress[device.id] !== undefined ? (
+                      <div className="device-video-progress">
+                        <div className="device-video-progress-track">
+                          <div className="device-video-progress-fill" style={{ width: `${uploadProgress[device.id]}%` }} />
+                        </div>
+                        <span>{uploadProgress[device.id]}%</span>
+                      </div>
+                    ) : (
+                      <div className="device-video-actions">
+                        <label className="admin-btn sm">
+                          <input
+                            type="file"
+                            accept="video/*"
+                            onChange={e => e.target.files[0] && handleVideoUpload(device.id, e.target.files[0])}
+                          />
+                          重新上传
+                        </label>
+                        <Button
+                          color="danger"
+                          size="sm"
+                          onPress={() => handleVideoDelete(device.id)}
+                        >
+                          删除
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  uploadProgress[device.id] !== undefined ? (
+                    <div className="device-video-progress">
+                      <div className="device-video-progress-track">
+                        <div className="device-video-progress-fill" style={{ width: `${uploadProgress[device.id]}%` }} />
+                      </div>
+                      <span>{uploadProgress[device.id]}%</span>
                     </div>
                   ) : (
-                    <label className="device-video-upload">
+                    <label className="device-video-dropzone">
                       <input
                         type="file"
                         accept="video/*"
                         onChange={e => e.target.files[0] && handleVideoUpload(device.id, e.target.files[0])}
                       />
-                      <span className="admin-btn">选择视频上传</span>
+                      <span>点击选择视频</span>
                     </label>
-                  )}
-                </div>
-              </>
-            )}
-          </div>
+                  )
+                )}
+              </div>
+            </div>
+          </AccordionItem>
         ))}
-      </div>
+      </Accordion>
     </div>
   );
 }

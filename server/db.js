@@ -259,9 +259,16 @@ function getDevice(id) {
   return stmts.getDevice.get(id);
 }
 
-function createDevice(name, sort_order = 0) {
+const createDeviceTransaction = db.transaction((name, sort_order) => {
   const result = stmts.createDevice.run(name, sort_order);
-  return stmts.getDevice.get(result.lastInsertRowid);
+  const id = result.lastInsertRowid;
+  stmts.createChecklistItem.run(id, '外观检查', 0);
+  stmts.createChecklistItem.run(id, '功能检查', 1);
+  return stmts.getDevice.get(id);
+});
+
+function createDevice(name, sort_order = 0) {
+  return createDeviceTransaction(name, sort_order);
 }
 
 function updateDevice(id, name, sort_order) {

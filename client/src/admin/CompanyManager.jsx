@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Button, Input, ListBox, ListBoxItem } from '@heroui/react';
 import { api } from '../api';
 
 export default function CompanyManager() {
@@ -39,22 +40,24 @@ export default function CompanyManager() {
       <h2 className="section-title">公司管理</h2>
       {error && <p className="admin-error">{error}</p>}
       <form className="add-form" onSubmit={handleAdd}>
-        <input
-          className="admin-input"
+        <Input
           value={newName}
-          onChange={e => setNewName(e.target.value)}
+          onValueChange={setNewName}
           placeholder="输入公司名称"
+          className="max-w-xs"
         />
-        <button className="admin-btn primary" type="submit">添加</button>
+        <Button type="submit" color="primary">添加</Button>
       </form>
-      <ul className="item-list">
+      <ListBox className="max-w-md" aria-label="公司列表">
         {companies.map(c => (
-          <li key={c.id} className="item-row">
-            <span>{c.name}</span>
-            <button className="admin-btn danger" onClick={() => handleDelete(c.id)}>删除</button>
-          </li>
+          <ListBoxItem key={c.id} textValue={c.name}>
+            <div className="flex items-center justify-between w-full">
+              <span>{c.name}</span>
+              <Button color="danger" size="sm" onPress={() => handleDelete(c.id)}>删除</Button>
+            </div>
+          </ListBoxItem>
         ))}
-      </ul>
+      </ListBox>
     </div>
   );
 }

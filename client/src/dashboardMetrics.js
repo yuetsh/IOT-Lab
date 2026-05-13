@@ -22,3 +22,20 @@ export function statusTone(status) {
 export function formatCount(current, total) {
   return `${Number(current) || 0}/${Number(total) || 0}`;
 }
+
+const DEVICE_PALETTE = [
+  '#14b8a6', // teal
+  '#f59e0b', // amber
+  '#6366f1', // indigo
+  '#ec4899', // pink
+  '#22c55e', // green
+  '#06b6d4', // cyan
+  '#f97316', // orange
+  '#8b5cf6', // violet
+  '#e11d48', // rose
+  '#3b82f6', // blue
+];
+
+export function deviceColor(deviceId, index) {
+  return DEVICE_PALETTE[index % DEVICE_PALETTE.length];
+}

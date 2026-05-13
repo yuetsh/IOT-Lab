@@ -120,6 +120,10 @@ test('buildAdminOverview emphasizes company completion and chart data', () => {
     overview.device_bottlenecks.map(row => [row.device_name, row.completion_percent]),
     [['设备 1', 50], ['设备 2', 33]]
   );
+  assert.deepEqual(
+    overview.company_cards[1].devices[0].checklist_items.map(item => [item.label, item.completed]),
+    [['连接电源', true], ['配置网络', false]]
+  );
 });
 
 test('buildAdminOverview returns stable empty-state data', () => {

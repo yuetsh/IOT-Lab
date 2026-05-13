@@ -1,5 +1,5 @@
-import { clampPercent } from '../dashboardMetrics';
-import './admin.css';
+import { Card, CardContent, CardHeader } from '@heroui/react';
+import { clampPercent, deviceColor } from '../dashboardMetrics';
 
 export default function DeviceBottleneckChart({ data }) {
   const sortedData = [...data].sort((a, b) => (
@@ -8,28 +8,31 @@ export default function DeviceBottleneckChart({ data }) {
   ));
 
   return (
-    <section className="admin-chart-card">
-      <div className="chart-heading">
-        <span>设备瓶颈</span>
-      </div>
-      {sortedData.length === 0 ? (
-        <p className="admin-empty-inline">暂无设备数据</p>
-      ) : (
-        <div className="bar-list compact">
-          {sortedData.map(device => {
-            const percent = clampPercent(device.completion_percent);
-            return (
-              <div key={device.device_id} className="bar-row">
-                <span>{device.device_name}</span>
-                <div className="bar-track">
-                  <i className={percent >= 80 ? 'complete' : percent > 0 ? 'progress' : 'idle'} style={{ width: `${percent}%` }} />
+    <Card>
+      <CardHeader>
+        <span className="text-gray-300 font-extrabold">设备瓶颈</span>
+      </CardHeader>
+      <CardContent>
+        {sortedData.length === 0 ? (
+          <p className="text-gray-400">暂无设备数据</p>
+        ) : (
+          <div className="bar-list compact">
+            {sortedData.map((device, di) => {
+              const percent = clampPercent(device.completion_percent);
+              const devColor = deviceColor(device.device_id, di);
+              return (
+                <div key={device.device_id} className="bar-row">
+                  <span style={{ color: devColor }}>{device.device_name}</span>
+                  <div className="bar-track">
+                    <i style={{ width: `${percent}%`, background: devColor }} />
+                  </div>
+                  <strong>{percent}%</strong>
                 </div>
-                <strong>{percent}%</strong>
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </section>
+              );
+            })}
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }

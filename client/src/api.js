@@ -49,11 +49,26 @@ export const api = {
       adminCreateDevice: (name, sort_order = 0) => adminRequest('POST', '/devices', { name, sort_order }),
       adminUpdateDevice: (id, name, sort_order) => adminRequest('PUT', `/devices/${id}`, { name, sort_order }),
       adminDeleteDevice: (id) => adminRequest('DELETE', `/devices/${id}`),
-      adminUploadDeviceVideo: (id, file) => {
+      adminUploadDeviceVideo: (id, file, onProgress) => new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
         const form = new FormData();
         form.append('file', file);
-        return adminRequest('PUT', `/devices/${id}/video`, form);
-      },
+        xhr.upload.onprogress = (e) => {
+          if (e.lengthComputable && onProgress) onProgress(Math.round((e.loaded / e.total) * 100));
+        };
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            try { resolve(JSON.parse(xhr.responseText)); } catch { resolve(null); }
+          } else {
+            try { reject(new Error(JSON.parse(xhr.responseText).error || xhr.statusText)); }
+            catch { reject(new Error(xhr.statusText)); }
+          }
+        };
+        xhr.onerror = () => reject(new Error('上传失败'));
+        xhr.open('PUT', `${BASE}/devices/${id}/video`);
+        xhr.setRequestHeader('x-admin-password', import.meta.env.VITE_ADMIN_PASSWORD || 'admin123');
+        xhr.send(form);
+      }),
       adminDeleteDeviceVideo: (id) => adminRequest('DELETE', `/devices/${id}/video`),
 
       adminCreateItem: (device_id, label, sort_order = 0) => adminRequest('POST', '/checklist-items', { device_id, label, sort_order }),
