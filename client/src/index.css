@@ -1,1 +1,4 @@
+@import "tailwindcss";
+@import "@heroui/styles";
+
 * { box-sizing: border-box; }

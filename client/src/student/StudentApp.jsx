@@ -1,15 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import CompanySelect from './CompanySelect';
 import CompanyWorkspace from './CompanyWorkspace';
 
 export default function StudentApp() {
-  const [company, setCompany] = useState(null); // { id, name }
-
-  useEffect(() => {
+  const [company, setCompany] = useState(() => {
     const id = localStorage.getItem('selectedCompanyId');
     const name = localStorage.getItem('selectedCompanyName');
-    if (id && name) setCompany({ id: Number(id), name });
-  }, []);
+    return id && name ? { id: Number(id), name } : null;
+  }); // { id, name }
 
   function handleSelect(c) {
     localStorage.setItem('selectedCompanyId', c.id);

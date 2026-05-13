@@ -1,12 +1,16 @@
+import { Checkbox } from '@heroui/react';
+
 export default function ChecklistItem({ item, checked, onToggle }) {
   return (
-    <label className="checklist-item">
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={e => onToggle(item.id, e.target.checked)}
-      />
-      <span>{item.label}</span>
-    </label>
+    <Checkbox
+      className="checklist-item"
+      isSelected={checked}
+      onChange={isSelected => onToggle(item.id, isSelected)}
+    >
+      <Checkbox.Control>
+        <Checkbox.Indicator />
+      </Checkbox.Control>
+      <Checkbox.Content>{item.label}</Checkbox.Content>
+    </Checkbox>
   );
 }

@@ -3,3 +3,4 @@ data/
 server/uploads/
 client/dist/
 .env
+.superpowers/

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Alert, Button } from '@heroui/react';
 import { api } from '../api';
 import './student.css';
 
@@ -9,11 +10,18 @@ export default function ScreenshotUpload({ companyId, deviceId }) {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    if (!file) { setPreview(null); return; }
-    const url = URL.createObjectURL(file);
-    setPreview(url);
-    return () => URL.revokeObjectURL(url);
-  }, [file]);
+    return () => {
+      if (preview) URL.revokeObjectURL(preview);
+    };
+  }, [preview]);
+
+  function handleFileChange(e) {
+    const nextFile = e.target.files[0] || null;
+    setFile(nextFile);
+    setPreview(nextFile ? URL.createObjectURL(nextFile) : null);
+    setStatus('');
+    setMessage('');
+  }
 
   async function handleUpload() {
     if (!file) return;
@@ -24,6 +32,7 @@ export default function ScreenshotUpload({ companyId, deviceId }) {
       setStatus('success');
       setMessage('上传成功！');
       setFile(null);
+      setPreview(null);
     } catch (e) {
       setStatus('error');
       setMessage(e.message);
@@ -42,17 +51,23 @@ export default function ScreenshotUpload({ companyId, deviceId }) {
           key={status === 'success' ? 'reset' : 'active'}
           type="file"
           accept="image/*"
-          onChange={e => { setFile(e.target.files[0]); setStatus(''); setMessage(''); }}
+          onChange={handleFileChange}
         />
-        <button
+        <Button
           className="upload-btn"
-          onClick={handleUpload}
-          disabled={!file || status === 'uploading'}
+          onPress={handleUpload}
+          isDisabled={!file || status === 'uploading'}
         >
           {status === 'uploading' ? '上传中...' : '上传截图'}
-        </button>
-        {message && <span className={`upload-msg ${status}`}>{message}</span>}
+        </Button>
       </div>
+      {message && (
+        <Alert className="upload-msg" status={status === 'success' ? 'success' : 'danger'}>
+          <Alert.Content>
+            <Alert.Description>{message}</Alert.Description>
+          </Alert.Content>
+        </Alert>
+      )}
     </div>
   );
 }
