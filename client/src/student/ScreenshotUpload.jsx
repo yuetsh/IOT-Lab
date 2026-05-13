@@ -3,7 +3,7 @@ import { Alert, Button } from '@heroui/react';
 import { api } from '../api';
 import './student.css';
 
-export default function ScreenshotUpload({ companyId, deviceId }) {
+export default function ScreenshotUpload({ companyId, deviceId, onUploaded }) {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [status, setStatus] = useState('');
@@ -28,11 +28,12 @@ export default function ScreenshotUpload({ companyId, deviceId }) {
     setStatus('uploading');
     setMessage('');
     try {
-      await api.uploadScreenshot(companyId, deviceId, file);
+      const result = await api.uploadScreenshot(companyId, deviceId, file);
       setStatus('success');
-      setMessage('上传成功！');
+      setMessage('上传成功');
       setFile(null);
       setPreview(null);
+      onUploaded?.(result);
     } catch (e) {
       setStatus('error');
       setMessage(e.message);

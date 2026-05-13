@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import CompanySelect from './CompanySelect';
-import CompanyWorkspace from './CompanyWorkspace';
+import StudentDashboard from './StudentDashboard';
 
 export default function StudentApp() {
   const [company, setCompany] = useState(() => {
     const id = localStorage.getItem('selectedCompanyId');
     const name = localStorage.getItem('selectedCompanyName');
     return id && name ? { id: Number(id), name } : null;
-  }); // { id, name }
+  });
 
   function handleSelect(c) {
     localStorage.setItem('selectedCompanyId', c.id);
@@ -22,5 +22,5 @@ export default function StudentApp() {
   }
 
   if (!company) return <CompanySelect onSelect={handleSelect} />;
-  return <CompanyWorkspace company={company} onChangeCompany={handleChange} />;
+  return <StudentDashboard company={company} onChangeCompany={handleChange} />;
 }
