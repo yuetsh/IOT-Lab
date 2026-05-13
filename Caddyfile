@@ -1,0 +1,16 @@
+:80
+
+encode gzip zstd
+
+handle /api/* {
+    reverse_proxy app:3000
+}
+
+handle /uploads/* {
+    reverse_proxy app:3000
+}
+
+handle {
+    root * /usr/share/caddy
+    file_server
+}
