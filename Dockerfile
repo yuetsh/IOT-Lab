@@ -8,7 +8,8 @@ RUN npm run build
 
 # Stage 2: Install server production deps (compiles better-sqlite3)
 FROM node:26-alpine AS server-deps
-RUN apk add --no-cache python3 make g++
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories && \
+    apk add --no-cache python3 make g++
 WORKDIR /app
 COPY server/package*.json ./
 RUN npm config set registry https://registry.npmmirror.com && npm install --omit=dev
