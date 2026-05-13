@@ -5,7 +5,7 @@ const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const UPLOAD_DIR = path.resolve(process.env.UPLOAD_DIR || path.join(__dirname, 'uploads'));
+const UPLOAD_DIR = path.join(__dirname, 'uploads');
 
 // Middleware
 app.use(cors());
