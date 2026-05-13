@@ -1,11 +1,19 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { api } from '../api';
 import './student.css';
 
 export default function ScreenshotUpload({ companyId, deviceId }) {
   const [file, setFile] = useState(null);
-  const [status, setStatus] = useState(''); // '', 'uploading', 'success', 'error'
+  const [preview, setPreview] = useState(null);
+  const [status, setStatus] = useState('');
   const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    if (!file) { setPreview(null); return; }
+    const url = URL.createObjectURL(file);
+    setPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [file]);
 
   async function handleUpload() {
     if (!file) return;
@@ -24,20 +32,27 @@ export default function ScreenshotUpload({ companyId, deviceId }) {
 
   return (
     <div className="screenshot-upload">
-      <input
-        key={status === 'success' ? 'reset' : 'active'}
-        type="file"
-        accept="image/*"
-        onChange={e => { setFile(e.target.files[0]); setStatus(''); setMessage(''); }}
-      />
-      <button
-        className="upload-btn"
-        onClick={handleUpload}
-        disabled={!file || status === 'uploading'}
-      >
-        {status === 'uploading' ? '上传中...' : '上传截图'}
-      </button>
-      {message && <span className={`upload-msg ${status}`}>{message}</span>}
+      {preview && (
+        <div className="upload-preview">
+          <img src={preview} alt="预览" />
+        </div>
+      )}
+      <div className="upload-controls">
+        <input
+          key={status === 'success' ? 'reset' : 'active'}
+          type="file"
+          accept="image/*"
+          onChange={e => { setFile(e.target.files[0]); setStatus(''); setMessage(''); }}
+        />
+        <button
+          className="upload-btn"
+          onClick={handleUpload}
+          disabled={!file || status === 'uploading'}
+        >
+          {status === 'uploading' ? '上传中...' : '上传截图'}
+        </button>
+        {message && <span className={`upload-msg ${status}`}>{message}</span>}
+      </div>
     </div>
   );
 }
