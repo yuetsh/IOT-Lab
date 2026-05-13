@@ -18,6 +18,14 @@ export default function DeviceProgressCard({ device, onToggle }) {
           {formatCount(device.completed_items, device.total_items)}
         </Chip>
       </header>
+      {device.video_filename && (
+        <video
+          className="device-video-player"
+          src={`/uploads/${device.video_filename}`}
+          controls
+          preload="metadata"
+        />
+      )}
       <div className="device-meter" aria-label={`${device.name} 完成率 ${percent}%`}>
         <span style={{ width: `${percent}%` }} />
       </div>

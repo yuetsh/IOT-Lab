@@ -28,7 +28,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .device-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-bottom: 0.75rem; }
 .device-header h3 { font-size: 1.2rem; color: #f8fafc; }
 
-.student-dashboard-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr); gap: 16px; margin-bottom: 16px; }
+.student-dashboard-grid, .activity-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr); gap: 16px; margin-bottom: 16px; }
+.activity-block { margin-bottom: 28px; }
+.activity-block + .activity-block { padding-top: 4px; }
+.activity-index-pill { display: inline-flex; align-items: center; min-height: 28px; padding: 0 10px; border-radius: 999px; background: rgba(20, 184, 166, 0.14); color: #5eead4; border: 1px solid rgba(20, 184, 166, 0.35); font-size: 0.78rem; font-weight: 900; white-space: nowrap; }
+.activity-guide h2 { margin: 0 0 8px; color: #f8fafc; font-size: 1.05rem; }
 .student-panel { background: #111827; border: 1px solid #263244; border-radius: 10px; padding: 18px; box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22); }
 .student-panel.complete { border-color: rgba(20, 184, 166, 0.7); }
 .student-panel.progress { border-color: rgba(245, 158, 11, 0.65); }
@@ -58,16 +62,44 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .upload-controls { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
 .upload-controls input { color: #cbd5e1; max-width: 100%; }
 .upload-btn { background: #0f766e; color: #fff; font-size: 0.9rem; }
+.screenshot-upload-dropzone { align-items: stretch; }
+.upload-dropzone { display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: center; min-height: 148px; padding: 18px; border: 2px dashed #2dd4bf; border-radius: 10px; background: rgba(20, 184, 166, 0.08); cursor: pointer; transition: border-color 0.15s, background 0.15s, transform 0.15s; }
+.upload-dropzone:hover, .upload-dropzone.active { border-color: #5eead4; background: rgba(20, 184, 166, 0.14); transform: translateY(-1px); }
+.upload-dropzone.selected { border-style: solid; }
+.upload-dropzone input { display: none; }
+.dropzone-icon { width: 64px; height: 64px; display: grid; place-items: center; border-radius: 10px; background: #0f766e; color: #fff; font-size: 2.2rem; font-weight: 500; line-height: 1; }
+.dropzone-preview img { width: 96px; height: 72px; object-fit: cover; }
+.dropzone-copy { min-width: 0; display: grid; gap: 6px; color: #cbd5e1; }
+.dropzone-copy strong { color: #f8fafc; font-size: 1.05rem; overflow-wrap: anywhere; }
+.dropzone-copy small { color: #94a3b8; line-height: 1.5; }
+.upload-btn-prominent { align-self: flex-start; min-width: 136px; min-height: 40px; font-weight: 800; }
 .upload-msg { max-width: 420px; }
 .latest-shot { margin: 10px 0 0; color: #cbd5e1; font-size: 0.9rem; }
 .dashboard-alert { margin-bottom: 16px; }
 .link-btn { color: #93c5fd; font-size: 0.9rem; }
 
+.quiz-panel-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+.quiz-panel { min-width: 0; }
+.quiz-panel h2 { margin: 0; color: #f8fafc; font-size: 1.08rem; }
+.quiz-pass { color: #5eead4; font-size: 0.95rem; }
+.quiz-fail { color: #fbbf24; font-size: 0.95rem; }
+.quiz-form { display: flex; flex-direction: column; gap: 14px; }
+.quiz-prompt { margin: 4px 0 0; color: #e5eefb; line-height: 1.65; }
+.quiz-options { display: grid; gap: 10px; }
+.quiz-choice { display: block; padding: 12px 16px; border: 1px solid #263244; border-radius: 8px; background: #0f172a; color: #dbeafe; cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+.quiz-choice:hover { border-color: #14b8a6; }
+.quiz-choice input { display: none; }
+.quiz-choice.selected { border-color: #14b8a6; background: #0d2f2b; color: #f0fdfa; }
+.quiz-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+.device-video-player { width: 100%; border-radius: 6px; margin: 10px 0 4px; background: #000; max-height: 220px; }
+
 @media (max-width: 760px) {
   .student-shell, .page { width: min(100% - 24px, 1180px); padding-top: 18px; }
   .project-header, .student-hero { flex-direction: column; }
-  .student-dashboard-grid { grid-template-columns: 1fr; }
+  .student-dashboard-grid, .activity-grid { grid-template-columns: 1fr; }
   .company-grid { grid-template-columns: 1fr; }
   .workspace-header { align-items: flex-start; flex-direction: column; }
   .section-title-row { align-items: flex-start; flex-direction: column; gap: 0.5rem; }
+  .upload-dropzone { grid-template-columns: 1fr; justify-items: start; }
 }
