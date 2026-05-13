@@ -121,3 +121,32 @@ test('buildAdminOverview emphasizes company completion and chart data', () => {
     [['设备 1', 50], ['设备 2', 33]]
   );
 });
+
+test('buildAdminOverview returns stable empty-state data', () => {
+  const overview = buildAdminOverview({
+    companies: [],
+    devices: [],
+    progressByCompany: new Map(),
+    screenshots: [],
+  });
+
+  assert.deepEqual(overview.summary, {
+    company_count: 0,
+    device_count: 0,
+    checklist_item_count: 0,
+    screenshot_count: 0,
+    complete_company_count: 0,
+    in_progress_company_count: 0,
+    not_started_company_count: 0,
+    average_completion_percent: 0,
+  });
+  assert.deepEqual(overview.status_distribution, [
+    { status: 'complete', label: '已完成', count: 0 },
+    { status: 'in_progress', label: '进行中', count: 0 },
+    { status: 'not_started', label: '未开始', count: 0 },
+  ]);
+  assert.deepEqual(overview.company_rankings, []);
+  assert.deepEqual(overview.screenshot_chart, []);
+  assert.deepEqual(overview.device_bottlenecks, []);
+  assert.deepEqual(overview.company_cards, []);
+});

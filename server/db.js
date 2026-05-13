@@ -3,6 +3,7 @@
 const path = require('path');
 const fs = require('fs');
 const Database = require('better-sqlite3');
+const { buildCompanySummary, buildAdminOverview } = require('./dashboardSummary');
 
 // Ensure data directory exists
 const dataDir = path.join(__dirname, '../data');
@@ -84,6 +85,9 @@ const stmts = {
 
   // Progress
   getProgressForCompany: db.prepare(
+    'SELECT checklist_item_id FROM progress WHERE company_id = ?'
+  ),
+  getProgressRowsForCompany: db.prepare(
     'SELECT checklist_item_id FROM progress WHERE company_id = ?'
   ),
   addProgress: db.prepare(
@@ -248,6 +252,35 @@ function getStats() {
   });
 }
 
+function getCompanyDashboardSummary(company_id) {
+  const company = getCompany(company_id);
+  if (!company) return null;
+
+  return buildCompanySummary({
+    company,
+    devices: getDevicesWithItems(),
+    completedItemIds: stmts.getProgressRowsForCompany.all(company_id).map(row => row.checklist_item_id),
+    screenshots: getScreenshotsForCompany(company_id),
+  });
+}
+
+function getAdminOverview() {
+  const companies = getCompanies();
+  const devices = getDevicesWithItems();
+  const screenshots = getScreenshots();
+  const progressByCompany = new Map(companies.map(company => [
+    Number(company.id),
+    stmts.getProgressRowsForCompany.all(company.id).map(row => row.checklist_item_id),
+  ]));
+
+  return buildAdminOverview({
+    companies,
+    devices,
+    progressByCompany,
+    screenshots,
+  });
+}
+
 // Screenshots
 function createScreenshot(company_id, device_id, filename, original_name) {
   const result = stmts.createScreenshot.run(company_id, device_id, filename, original_name);
@@ -293,6 +326,8 @@ module.exports = {
   // Admin
   getAllProgress,
   getStats,
+  getCompanyDashboardSummary,
+  getAdminOverview,
   // Screenshots
   createScreenshot,
   getScreenshots,

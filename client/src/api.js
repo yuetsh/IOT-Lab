@@ -21,6 +21,7 @@ export const api = {
   getCompanies: () => request('GET', '/companies'),
   getDevices: () => request('GET', '/devices'),
   getProgress: (companyId) => request('GET', `/progress/${companyId}`),
+  getCompanySummary: (companyId) => request('GET', `/progress/company/${companyId}/summary`),
   addProgress: (company_id, checklist_item_id) => request('POST', '/progress', { company_id, checklist_item_id }),
   removeProgress: (company_id, item_id) => request('DELETE', `/progress/${company_id}/${item_id}`),
   uploadScreenshot: (company_id, device_id, file) => {
@@ -52,6 +53,7 @@ export const api = {
 
       adminGetAllProgress: () => adminRequest('GET', '/progress/admin/all'),
       adminGetStats: () => adminRequest('GET', '/progress/admin/stats'),
+      adminGetOverview: () => adminRequest('GET', '/progress/admin/overview'),
 
       adminGetAllScreenshots: () => adminRequest('GET', '/screenshots'),
       adminDeleteScreenshot: (id) => adminRequest('DELETE', `/screenshots/${id}`),
