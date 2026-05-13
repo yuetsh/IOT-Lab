@@ -1,53 +1,73 @@
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f7fa; color: #333; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #08111f; color: #e5eefb; }
 
-.page { max-width: 900px; margin: 0 auto; padding: 2rem 1rem; }
-.page-title { font-size: 1.35rem; margin: 0 0 1rem; color: #1a1a2e; }
-.center-msg { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; text-align: center; padding: 4rem; color: #888; }
-.empty-msg { color: #888; text-align: center; padding: 2rem; }
+.student-shell, .page { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 28px 0 42px; }
+.center-msg { min-height: 70vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem; text-align: center; color: #94a3b8; }
+.empty-msg { color: #94a3b8; text-align: center; padding: 2rem; }
 
-.project-header { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 2px solid #e2e8f0; }
-.project-eyebrow { margin: 0 0 0.45rem; color: #2b6cb0; font-size: 0.85rem; font-weight: 700; }
-.project-header h1 { color: #1a1a2e; font-size: 2rem; line-height: 1.2; margin-bottom: 0.75rem; }
-.project-intro { max-width: 720px; margin: 0; color: #4a5568; font-size: 1rem; line-height: 1.7; }
+.project-header, .student-hero { display: flex; justify-content: space-between; gap: 1rem; align-items: flex-start; margin-bottom: 22px; padding: 20px; border: 1px solid #233044; border-radius: 10px; background: linear-gradient(135deg, #0d1728, #101b2d); }
+.project-eyebrow { margin: 0 0 0.45rem; color: #38bdf8; font-size: 0.82rem; font-weight: 800; }
+.project-header h1, .student-hero h1 { margin: 0 0 0.7rem; color: #f8fafc; font-size: clamp(1.7rem, 4vw, 2.6rem); line-height: 1.1; }
+.project-intro { max-width: 740px; margin: 0; color: #a8b5c8; line-height: 1.7; }
 
-.company-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem; }
-.company-card { min-height: 92px; justify-content: center; background: #fff; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem 1rem; color: #1a1a2e; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-.company-card:hover { border-color: #4299e1; background: #ebf8ff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(66,153,225,0.2); }
+.page-title { font-size: 1rem; margin: 0 0 1rem; color: #dbeafe; }
+.company-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1rem; }
+.company-card { min-height: 104px; justify-content: center; background: #111827; border: 1px solid #263244; border-radius: 8px; padding: 1.5rem 1rem; color: #f8fafc; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: border-color 0.2s, transform 0.2s, background 0.2s; }
+.company-card:hover { border-color: #14b8a6; background: #132235; transform: translateY(-2px); }
 
 .workspace-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 2rem; }
-.workspace-label { margin-bottom: 0.25rem; color: #718096; font-size: 0.85rem; }
-.workspace-header h2 { font-size: 1.45rem; color: #1a1a2e; }
-.link-btn { color: #2b6cb0; font-size: 0.9rem; }
-
+.workspace-label { margin-bottom: 0.25rem; color: #94a3b8; font-size: 0.85rem; }
+.workspace-header h2 { font-size: 1.45rem; color: #f8fafc; }
 .workspace-section { margin-bottom: 2.5rem; }
 .activity-section { padding-top: 0.25rem; }
 .section-title-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; }
 .activity-index { flex: 0 0 auto; font-weight: 700; }
-.section-heading { font-size: 1.2rem; font-weight: 700; color: #2d3748; }
-.section-description { color: #4a5568; line-height: 1.6; margin: 0 0 1rem; }
-
+.section-heading { font-size: 1.2rem; font-weight: 700; color: #dbeafe; }
+.section-description { color: #94a3b8; line-height: 1.6; margin: 0 0 1rem; }
 .device-list { display: flex; flex-direction: column; gap: 1.5rem; }
-
-.screenshot-standalone { background: #fff; border-radius: 10px; padding: 1rem 1.25rem; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-.device-card { border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.screenshot-standalone, .device-card { background: #111827; border: 1px solid #263244; border-radius: 10px; padding: 1rem 1.25rem; box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22); }
 .device-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-bottom: 0.75rem; }
-.device-header h3 { font-size: 1.2rem; color: #2d3748; }
-.progress-badge { font-weight: 700; }
+.device-header h3 { font-size: 1.2rem; color: #f8fafc; }
 
-.checklist { display: flex; flex-direction: column; gap: 0.5rem; }
-.checklist-item { display: flex; align-items: center; gap: 0.75rem; width: 100%; cursor: pointer; padding: 0.5rem; border-radius: 6px; transition: background 0.15s; }
-.checklist-item:hover { background: #f7fafc; }
+.student-dashboard-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr); gap: 16px; margin-bottom: 16px; }
+.student-panel { background: #111827; border: 1px solid #263244; border-radius: 10px; padding: 18px; box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22); }
+.student-panel.complete { border-color: rgba(20, 184, 166, 0.7); }
+.student-panel.progress { border-color: rgba(245, 158, 11, 0.65); }
+.student-panel.idle { border-color: #334155; }
+.panel-label { margin: 0 0 0.45rem; color: #38bdf8; font-size: 0.76rem; font-weight: 800; text-transform: uppercase; }
+.panel-muted { margin: 0; color: #94a3b8; line-height: 1.6; }
+.panel-heading-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 10px; }
+.panel-heading-row h2 { margin: 0; color: #f8fafc; font-size: 1.1rem; }
+.panel-heading-row strong { color: #5eead4; font-size: 1.45rem; }
+
+.progress-number { color: #f8fafc; font-size: clamp(3rem, 10vw, 5.2rem); font-weight: 900; line-height: 1; margin-bottom: 12px; }
+.summary-meter, .device-meter, .company-meter, .mini-track { height: 8px; background: #1e293b; border-radius: 999px; overflow: hidden; }
+.summary-meter span, .device-meter span, .company-meter i, .mini-track i { display: block; height: 100%; background: #14b8a6; border-radius: inherit; }
+.device-progress-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.device-progress-head { display: flex; justify-content: space-between; gap: 1rem; align-items: flex-start; margin-bottom: 12px; }
+.device-progress-head h3 { margin: 0; color: #f8fafc; font-size: 1.15rem; }
+.progress-badge { font-weight: 800; }
+
+.checklist { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 12px; }
+.checklist-item { display: flex; align-items: center; gap: 0.75rem; width: 100%; cursor: pointer; padding: 0.65rem; border-radius: 7px; background: #0f172a; color: #dbeafe; transition: background 0.15s; }
+.checklist-item:hover { background: #172033; }
 .checklist-item span { font-size: 0.95rem; }
 
-.screenshot-upload { display: flex; flex-direction: column; gap: 0.75rem; }
+.screenshot-upload { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 14px; }
 .upload-preview { display: inline-block; }
-.upload-preview img { max-width: 240px; max-height: 160px; object-fit: contain; border-radius: 6px; border: 1px solid #e2e8f0; background: #f7fafc; }
+.upload-preview img { max-width: 240px; max-height: 160px; object-fit: contain; border-radius: 8px; border: 1px solid #334155; background: #0f172a; }
 .upload-controls { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
-.upload-btn { font-size: 0.9rem; }
+.upload-controls input { color: #cbd5e1; max-width: 100%; }
+.upload-btn { background: #0f766e; color: #fff; font-size: 0.9rem; }
 .upload-msg { max-width: 420px; }
+.latest-shot { margin: 10px 0 0; color: #cbd5e1; font-size: 0.9rem; }
+.dashboard-alert { margin-bottom: 16px; }
+.link-btn { color: #93c5fd; font-size: 0.9rem; }
 
-@media (max-width: 640px) {
-  .project-header h1 { font-size: 1.7rem; }
+@media (max-width: 760px) {
+  .student-shell, .page { width: min(100% - 24px, 1180px); padding-top: 18px; }
+  .project-header, .student-hero { flex-direction: column; }
+  .student-dashboard-grid { grid-template-columns: 1fr; }
+  .company-grid { grid-template-columns: 1fr; }
   .workspace-header { align-items: flex-start; flex-direction: column; }
   .section-title-row { align-items: flex-start; flex-direction: column; gap: 0.5rem; }
 }
