@@ -1,4 +1,5 @@
 import { NavLink, Routes, Route, Navigate } from 'react-router-dom';
+import AdminDashboard from './AdminDashboard';
 import CompanyManager from './CompanyManager';
 import DeviceManager from './DeviceManager';
 import ProgressOverview from './ProgressOverview';
@@ -6,9 +7,10 @@ import ScreenshotGallery from './ScreenshotGallery';
 import './admin.css';
 
 const TABS = [
+  { path: '/admin/dashboard', label: '完成看板' },
   { path: '/admin/companies', label: '公司管理' },
   { path: '/admin/devices', label: '设备管理' },
-  { path: '/admin/progress', label: '完成情况' },
+  { path: '/admin/progress', label: '完成矩阵' },
   { path: '/admin/screenshots', label: '截图管理' },
 ];
 
@@ -31,7 +33,8 @@ export default function AdminApp() {
       </aside>
       <main className="admin-main">
         <Routes>
-          <Route index element={<Navigate to="companies" replace />} />
+          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="companies" element={<CompanyManager />} />
           <Route path="devices" element={<DeviceManager />} />
           <Route path="progress" element={<ProgressOverview />} />
