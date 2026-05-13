@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { NavLink, Routes, Route, Navigate } from 'react-router-dom';
 import CompanyManager from './CompanyManager';
 import DeviceManager from './DeviceManager';
 import ProgressOverview from './ProgressOverview';
@@ -6,36 +6,37 @@ import ScreenshotGallery from './ScreenshotGallery';
 import './admin.css';
 
 const TABS = [
-  { id: 'companies', label: '公司管理' },
-  { id: 'devices', label: '设备管理' },
-  { id: 'progress', label: '完成情况' },
-  { id: 'screenshots', label: '截图管理' },
+  { path: 'companies', label: '公司管理' },
+  { path: 'devices', label: '设备管理' },
+  { path: 'progress', label: '完成情况' },
+  { path: 'screenshots', label: '截图管理' },
 ];
 
 export default function AdminApp() {
-  const [activeTab, setActiveTab] = useState('companies');
-
   return (
     <div className="admin-layout">
       <aside className="admin-sidebar">
         <h2 className="sidebar-title">教师管理后台</h2>
         <nav>
           {TABS.map(t => (
-            <button
-              key={t.id}
-              className={`sidebar-btn ${activeTab === t.id ? 'active' : ''}`}
-              onClick={() => setActiveTab(t.id)}
+            <NavLink
+              key={t.path}
+              to={t.path}
+              className={({ isActive }) => `sidebar-btn${isActive ? ' active' : ''}`}
             >
               {t.label}
-            </button>
+            </NavLink>
           ))}
         </nav>
       </aside>
       <main className="admin-main">
-        {activeTab === 'companies' && <CompanyManager />}
-        {activeTab === 'devices' && <DeviceManager />}
-        {activeTab === 'progress' && <ProgressOverview />}
-        {activeTab === 'screenshots' && <ScreenshotGallery />}
+        <Routes>
+          <Route index element={<Navigate to="companies" replace />} />
+          <Route path="companies" element={<CompanyManager />} />
+          <Route path="devices" element={<DeviceManager />} />
+          <Route path="progress" element={<ProgressOverview />} />
+          <Route path="screenshots" element={<ScreenshotGallery />} />
+        </Routes>
       </main>
     </div>
   );
