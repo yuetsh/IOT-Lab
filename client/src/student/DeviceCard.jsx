@@ -1,8 +1,7 @@
 import ChecklistItem from './ChecklistItem';
-import ScreenshotUpload from './ScreenshotUpload';
 import './student.css';
 
-export default function DeviceCard({ device, checkedIds, companyId, onToggle }) {
+export default function DeviceCard({ device, checkedIds, onToggle }) {
   const total = device.checklist_items?.length || 0;
   const done = device.checklist_items?.filter(i => checkedIds.has(i.id)).length || 0;
 
@@ -22,7 +21,6 @@ export default function DeviceCard({ device, checkedIds, companyId, onToggle }) 
           />
         ))}
       </div>
-      <ScreenshotUpload companyId={companyId} deviceId={device.id} />
     </div>
   );
 }

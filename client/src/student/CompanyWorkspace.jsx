@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { api } from '../api';
 import DeviceCard from './DeviceCard';
+import ScreenshotUpload from './ScreenshotUpload';
 import './student.css';
 
 export default function CompanyWorkspace({ company, onChangeCompany }) {
@@ -54,18 +55,34 @@ export default function CompanyWorkspace({ company, onChangeCompany }) {
         <h1>{company.name}</h1>
         <button className="link-btn" onClick={onChangeCompany}>切换公司</button>
       </header>
-      <div className="device-list">
-        {devices.length === 0 && <p className="empty-msg">暂无设备，请联系教师添加</p>}
-        {devices.map(device => (
-          <DeviceCard
-            key={device.id}
-            device={device}
-            checkedIds={checkedIds}
-            companyId={company.id}
-            onToggle={handleToggle}
-          />
-        ))}
-      </div>
+      <section className="workspace-section">
+        <h2 className="section-heading">设备调试清单</h2>
+        <div className="device-list">
+          {devices.length === 0 && <p className="empty-msg">暂无设备，请联系教师添加</p>}
+          {devices.map(device => (
+            <DeviceCard
+              key={device.id}
+              device={device}
+              checkedIds={checkedIds}
+              onToggle={handleToggle}
+            />
+          ))}
+        </div>
+      </section>
+
+      {devices.length > 0 && (
+        <section className="workspace-section">
+          <h2 className="section-heading">截图上传</h2>
+          <div className="screenshot-section">
+            {devices.map(device => (
+              <div key={device.id} className="screenshot-row">
+                <span className="screenshot-device-label">{device.name}</span>
+                <ScreenshotUpload companyId={company.id} deviceId={device.id} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
