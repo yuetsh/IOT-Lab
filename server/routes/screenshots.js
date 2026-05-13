@@ -9,7 +9,7 @@ const { v4: uuidv4 } = require('uuid');
 const db = require('../db');
 const adminAuth = require('../middleware/adminAuth');
 
-const UPLOAD_DIR = process.env.UPLOAD_DIR || './server/uploads';
+const UPLOAD_DIR = path.resolve(process.env.UPLOAD_DIR || path.join(__dirname, '../uploads'));
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
