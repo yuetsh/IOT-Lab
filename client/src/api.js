@@ -1,7 +1,7 @@
 const BASE = '/api';
 
-async function request(method, path, body) {
-  const opts = { method, headers: {} };
+async function request(method, path, body, extraHeaders = {}) {
+  const opts = { method, headers: { ...extraHeaders } };
   if (body instanceof FormData) {
     opts.body = body;
   } else if (body) {
@@ -31,4 +31,30 @@ export const api = {
     return request('POST', '/screenshots', form);
   },
   getScreenshots: (companyId) => request('GET', `/screenshots/${companyId}`),
+
+  // Admin methods — include X-Admin-Password header
+  ...(() => {
+    const adminRequest = (method, path, body) =>
+      request(method, path, body, { 'x-admin-password': 'admin123' });
+    return {
+      adminGetCompanies: () => adminRequest('GET', '/companies'),
+      adminCreateCompany: (name) => adminRequest('POST', '/companies', { name }),
+      adminDeleteCompany: (id) => adminRequest('DELETE', `/companies/${id}`),
+
+      adminGetDevices: () => adminRequest('GET', '/devices'),
+      adminCreateDevice: (name, sort_order = 0) => adminRequest('POST', '/devices', { name, sort_order }),
+      adminUpdateDevice: (id, name, sort_order) => adminRequest('PUT', `/devices/${id}`, { name, sort_order }),
+      adminDeleteDevice: (id) => adminRequest('DELETE', `/devices/${id}`),
+
+      adminCreateItem: (device_id, label, sort_order = 0) => adminRequest('POST', '/checklist-items', { device_id, label, sort_order }),
+      adminUpdateItem: (id, label, sort_order) => adminRequest('PUT', `/checklist-items/${id}`, { label, sort_order }),
+      adminDeleteItem: (id) => adminRequest('DELETE', `/checklist-items/${id}`),
+
+      adminGetAllProgress: () => adminRequest('GET', '/progress/admin/all'),
+      adminGetStats: () => adminRequest('GET', '/progress/admin/stats'),
+
+      adminGetAllScreenshots: () => adminRequest('GET', '/screenshots'),
+      adminDeleteScreenshot: (id) => adminRequest('DELETE', `/screenshots/${id}`),
+    };
+  })(),
 };
