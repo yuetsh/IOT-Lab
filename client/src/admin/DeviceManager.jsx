@@ -47,6 +47,22 @@ export default function DeviceManager() {
     });
   }
 
+  async function handleVideoUpload(deviceId, file) {
+    setError('');
+    try {
+      const updated = await api.adminUploadDeviceVideo(deviceId, file);
+      setDevices(prev => prev.map(d => d.id === updated.id ? { ...d, video_filename: updated.video_filename } : d));
+    } catch (e) { setError(e.message); }
+  }
+
+  async function handleVideoDelete(deviceId) {
+    setError('');
+    try {
+      const updated = await api.adminDeleteDeviceVideo(deviceId);
+      setDevices(prev => prev.map(d => d.id === updated.id ? { ...d, video_filename: updated.video_filename } : d));
+    } catch (e) { setError(e.message); }
+  }
+
   return (
     <div>
       <h2 className="section-title">设备管理</h2>
@@ -74,7 +90,33 @@ export default function DeviceManager() {
               <button className="admin-btn danger" onClick={() => handleDelete(device.id)}>删除</button>
             </div>
             {expandedIds.has(device.id) && (
-              <ChecklistEditor device={device} onUpdate={load} />
+              <>
+                <ChecklistEditor device={device} onUpdate={load} />
+                <div className="device-video-admin">
+                  <p className="device-video-label">设备视频</p>
+                  {device.video_filename ? (
+                    <div className="device-video-current">
+                      <span>{device.video_filename}</span>
+                      <button
+                        className="admin-btn danger sm"
+                        type="button"
+                        onClick={() => handleVideoDelete(device.id)}
+                      >
+                        删除视频
+                      </button>
+                    </div>
+                  ) : (
+                    <label className="device-video-upload">
+                      <input
+                        type="file"
+                        accept="video/*"
+                        onChange={e => e.target.files[0] && handleVideoUpload(device.id, e.target.files[0])}
+                      />
+                      <span className="admin-btn">选择视频上传</span>
+                    </label>
+                  )}
+                </div>
+              </>
             )}
           </div>
         ))}
