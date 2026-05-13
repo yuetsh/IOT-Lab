@@ -25,7 +25,7 @@ db.exec(`
 
   CREATE TABLE IF NOT EXISTS devices (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
+    name TEXT NOT NULL UNIQUE,
     sort_order INTEGER DEFAULT 0
   );
 
@@ -188,7 +188,7 @@ function createChecklistItem(device_id, label, sort_order = 0) {
 
 function updateChecklistItem(id, label, sort_order) {
   stmts.updateChecklistItem.run(label, sort_order, id);
-  return { id, label, sort_order };
+  return db.prepare('SELECT * FROM checklist_items WHERE id = ?').get(id);
 }
 
 function deleteChecklistItem(id) {
@@ -226,13 +226,12 @@ function getStats() {
     let completed_count = 0;
     if (total_items > 0) {
       const itemIds = items.map(i => i.id);
+      const countStmt = db.prepare(
+        `SELECT COUNT(*) AS cnt FROM progress
+         WHERE company_id = ? AND checklist_item_id IN (${itemIds.map(() => '?').join(',')})`
+      );
       for (const company of companies) {
-        const completedItems = db
-          .prepare(
-            `SELECT COUNT(*) AS cnt FROM progress
-             WHERE company_id = ? AND checklist_item_id IN (${itemIds.map(() => '?').join(',')})`
-          )
-          .get(company.id, ...itemIds);
+        const completedItems = countStmt.get(company.id, ...itemIds);
         if (completedItems.cnt === total_items) {
           completed_count++;
         }
