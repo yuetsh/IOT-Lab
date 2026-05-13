@@ -12,8 +12,9 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/re
     apk add --no-cache python3 make g++
 WORKDIR /app
 COPY server/package*.json ./
+ENV npm_config_build_from_source true
 RUN npm config set registry https://registry.npmmirror.com && \
-    npm_config_build_from_source=true npm install --omit=dev
+    npm install --omit=dev
 
 # Stage 3: Production runtime
 FROM node:26-alpine
