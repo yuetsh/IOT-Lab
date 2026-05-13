@@ -6,7 +6,7 @@ export default function DeviceProgressGrid({ devices, onToggle }) {
   if (!devices.length) {
     return (
       <section className="student-panel empty-panel">
-        <p>暂无设备清单，请联系教师添加。</p>
+        <p>暂无设备检测清单，请联系教师添加。</p>
       </section>
     );
   }

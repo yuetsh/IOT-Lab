@@ -39,7 +39,7 @@ router.get('/admin/stats', adminAuth, async (req, res) => {
 router.get('/company/:company_id/summary', async (req, res) => {
   try {
     const summary = db.getCompanyDashboardSummary(req.params.company_id);
-    if (!summary) return res.status(404).json({ error: '企业不存在' });
+    if (!summary) return res.status(404).json({ error: '检测小组不存在' });
     res.json(summary);
   } catch (e) {
     res.status(500).json({ error: e.message });

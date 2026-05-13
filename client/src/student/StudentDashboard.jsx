@@ -65,7 +65,7 @@ export default function StudentDashboard({ company, onChangeCompany }) {
     return (
       <div className="student-shell center-msg">
         <Spinner size="lg" />
-        <span>加载实验数据...</span>
+        <span>加载检测实验数据...</span>
       </div>
     );
   }
@@ -87,12 +87,12 @@ export default function StudentDashboard({ company, onChangeCompany }) {
     <main className="student-shell">
       <header className="student-hero">
         <div>
-          <p className="project-eyebrow">设备调试实验平台</p>
-          <h1>{company.name} 实验驾驶舱</h1>
-          <p className="project-intro">勾选设备调试清单并上传公司实验截图，进度会同步到教师后台。</p>
+          <p className="project-eyebrow">物联网设备检测实验平台</p>
+          <h1>{company.name} 检测小组工作台</h1>
+          <p className="project-intro">勾选设备检测清单并上传检测记录截图，进度会同步到教师后台。</p>
         </div>
         <Button className="link-btn" variant="ghost" size="sm" onPress={onChangeCompany}>
-          切换公司
+          切换检测小组
         </Button>
       </header>
 
@@ -104,19 +104,19 @@ export default function StudentDashboard({ company, onChangeCompany }) {
         </Alert>
       )}
 
-      <ActivityBlock index="活动一" title="设备清单">
+      <ActivityBlock index="活动一" title="设备检测清单">
         <div className="activity-grid">
           <ProgressSummary summary={summary} />
           <div className="student-panel activity-guide">
             <p className="panel-label">操作引导</p>
-            <h2>逐项确认设备调试任务</h2>
-            <p className="panel-muted">按照设备卡片中的清单勾选完成项，教师后台会同步看到每个公司的进度。</p>
+            <h2>逐项确认设备检测任务</h2>
+            <p className="panel-muted">按照设备卡片中的清单勾选完成项，教师后台会同步看到每个检测小组的进度。</p>
           </div>
         </div>
         <DeviceProgressGrid devices={summary.devices || []} onToggle={handleToggle} />
       </ActivityBlock>
 
-      <ActivityBlock index="检测一" title="设备清单理解检测">
+      <ActivityBlock index="检测一" title="设备检测清单理解检测">
         <QuizPanelGrid
           companyId={company.id}
           quizzes={findQuizzes(summary.quizzes, 'check1')}
@@ -124,7 +124,7 @@ export default function StudentDashboard({ company, onChangeCompany }) {
         />
       </ActivityBlock>
 
-      <ActivityBlock index="活动二" title="截图上传">
+      <ActivityBlock index="活动二" title="检测记录截图上传">
         <CompanyScreenshotPanel
           companyId={company.id}
           summary={summary}
@@ -132,7 +132,7 @@ export default function StudentDashboard({ company, onChangeCompany }) {
         />
       </ActivityBlock>
 
-      <ActivityBlock index="检测二" title="截图提交理解检测">
+      <ActivityBlock index="检测二" title="检测记录提交理解检测">
         <QuizPanelGrid
           companyId={company.id}
           quizzes={findQuizzes(summary.quizzes, 'check2')}

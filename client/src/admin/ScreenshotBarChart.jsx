@@ -6,10 +6,10 @@ export default function ScreenshotBarChart({ data }) {
   return (
     <section className="admin-chart-card screenshot-chart">
       <div className="chart-heading">
-        <span>截图提交量</span>
+        <span>检测记录截图提交量</span>
       </div>
       {max === 0 ? (
-        <p className="admin-empty-inline">暂无截图提交</p>
+        <p className="admin-empty-inline">暂无检测记录截图提交</p>
       ) : (
         <div className="vertical-bars">
           {data.map(item => {

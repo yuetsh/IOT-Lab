@@ -37,14 +37,14 @@ export default function ChecklistEditor({ device, onUpdate }) {
           ))}
         </ol>
       ) : (
-        <p className="cl-empty">暂无检查项</p>
+        <p className="cl-empty">暂无检测项</p>
       )}
       <form className="cl-add" onSubmit={handleAdd}>
         <input
           className="admin-input cl-input"
           value={newLabel}
           onChange={e => setNewLabel(e.target.value)}
-          placeholder="输入检查项内容"
+          placeholder="输入检测项内容"
         />
         <button className="admin-btn primary sm" type="submit">添加</button>
       </form>

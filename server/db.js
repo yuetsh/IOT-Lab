@@ -262,8 +262,8 @@ function getDevice(id) {
 const createDeviceTransaction = db.transaction((name, sort_order) => {
   const result = stmts.createDevice.run(name, sort_order);
   const id = result.lastInsertRowid;
-  stmts.createChecklistItem.run(id, '外观检查', 0);
-  stmts.createChecklistItem.run(id, '功能检查', 1);
+  stmts.createChecklistItem.run(id, '设备外观检测', 0);
+  stmts.createChecklistItem.run(id, '基础功能检测', 1);
   return stmts.getDevice.get(id);
 });
 
@@ -489,7 +489,7 @@ function createQuizQuestion(activity_key, title, prompt, options) {
 
 function submitQuizAnswer(company_id, stage_key, option_id) {
   const question = stmts.getQuizQuestionByStage.get(stage_key);
-  if (!question || !question.prompt) return null;
+  if (!question) return null;
 
   const option = stmts.getQuizOption.get(option_id);
   if (!option || Number(option.question_id) !== Number(question.id)) return null;

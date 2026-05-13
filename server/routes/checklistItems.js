@@ -9,7 +9,7 @@ const adminAuth = require('../middleware/adminAuth');
 router.post('/', adminAuth, async (req, res) => {
   try {
     if (!req.body.device_id || !req.body.label) {
-      return res.status(400).json({ error: '缺少设备或检查项名称' });
+      return res.status(400).json({ error: '缺少设备或检测项名称' });
     }
     const { device_id, label, sort_order } = req.body;
     const item = db.createChecklistItem(device_id, label, sort_order);

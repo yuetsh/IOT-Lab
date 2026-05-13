@@ -60,7 +60,7 @@ export default function ScreenshotUpload({ companyId, deviceId, onUploaded, onPr
     try {
       const result = await api.uploadScreenshot(companyId, deviceId, file);
       setStatus('success');
-      setMessage('截图已上传');
+      setMessage('检测记录截图已上传');
       setFile(null);
       setPreview(null);
       setUploadedScreenshot(result);
@@ -73,7 +73,7 @@ export default function ScreenshotUpload({ companyId, deviceId, onUploaded, onPr
 
   const uploadedPreview = uploadedScreenshot?.filename ? `/uploads/${uploadedScreenshot.filename}` : null;
   const previewSrc = preview || uploadedPreview;
-  const previewAlt = preview ? '待上传截图预览' : '已上传截图预览';
+  const previewAlt = preview ? '待上传检测记录截图预览' : '已上传检测记录截图预览';
   const selectedLabel = file?.name || uploadedScreenshot?.original_name || uploadedScreenshot?.filename;
 
   useEffect(() => {
@@ -101,7 +101,7 @@ export default function ScreenshotUpload({ companyId, deviceId, onUploaded, onPr
                 onPress={handleUpload}
                 isDisabled={!file || status === 'uploading'}
               >
-                {status === 'uploading' ? '上传中...' : '上传截图'}
+                {status === 'uploading' ? '上传中...' : '上传记录截图'}
               </Button>
             </div>
             {selectedLabel && <p className="preview-filename">{selectedLabel}</p>}
@@ -122,7 +122,7 @@ export default function ScreenshotUpload({ companyId, deviceId, onUploaded, onPr
               />
               <span className="dropzone-icon">+</span>
               <span className="dropzone-copy">
-                <strong>拖拽截图到这里</strong>
+                <strong>拖拽检测记录截图到这里</strong>
                 <small>也可以点击此区域选择图片</small>
               </span>
             </label>
@@ -131,7 +131,7 @@ export default function ScreenshotUpload({ companyId, deviceId, onUploaded, onPr
               onPress={handleUpload}
               isDisabled={!file || status === 'uploading'}
             >
-              {status === 'uploading' ? '上传中...' : '上传截图'}
+              {status === 'uploading' ? '上传中...' : '上传记录截图'}
             </Button>
           </>
         )}
@@ -161,7 +161,7 @@ export default function ScreenshotUpload({ companyId, deviceId, onUploaded, onPr
           onPress={handleUpload}
           isDisabled={!file || status === 'uploading'}
         >
-          {status === 'uploading' ? '上传中...' : '上传截图'}
+          {status === 'uploading' ? '上传中...' : '上传记录截图'}
         </Button>
       </div>
       {message && (

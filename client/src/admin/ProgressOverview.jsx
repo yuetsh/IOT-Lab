@@ -40,12 +40,12 @@ export default function ProgressOverview() {
 
   return (
     <div>
-      <h2 className="section-title">完成情况</h2>
+      <h2 className="section-title">检测完成情况</h2>
       <div className="table-wrap">
         <table className="progress-table">
           <thead>
             <tr>
-              <th>公司</th>
+              <th>检测小组</th>
               {devices.map((d, di) => <th key={d.id} style={{ color: deviceColor(d.id, di) }}>{d.name}</th>)}
             </tr>
           </thead>
@@ -74,7 +74,7 @@ export default function ProgressOverview() {
             <div key={s.device_id} className="stat-card" style={{ borderLeft: `3px solid ${sc}` }}>
               <div className="stat-name" style={{ color: sc }}>{s.device_name}</div>
               <div className="stat-count">{s.completed_count}/{s.total_companies}</div>
-              <div className="stat-label">组完成全部</div>
+              <div className="stat-label">检测小组完成全部</div>
             </div>
           );
         })}

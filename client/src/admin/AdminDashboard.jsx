@@ -29,8 +29,8 @@ export default function AdminDashboard() {
     <div className="admin-dashboard">
       <header className="admin-page-header">
         <div>
-          <p>教师管理后台</p>
-          <h1>各家公司完成情况</h1>
+          <p>物联网设备检测课程</p>
+          <h1>各检测小组完成情况</h1>
         </div>
       </header>
 
@@ -44,8 +44,8 @@ export default function AdminDashboard() {
       </div>
 
       <div className="admin-section-head">
-        <h2>公司完成卡</h2>
-        <p>按公司查看总完成率、截图数和各设备完成情况。</p>
+        <h2>检测小组进度卡</h2>
+        <p>按检测小组查看总完成率、检测记录截图数和各设备完成情况。</p>
       </div>
       <CompanyProgressCards companies={overview.company_cards} />
     </div>

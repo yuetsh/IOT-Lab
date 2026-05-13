@@ -136,8 +136,16 @@
 .quiz-editor-head strong { color: #5eead4; font-size: 0.9rem; }
 .admin-field { display: grid; gap: 8px; margin-bottom: 14px; color: #cbd5e1; font-size: 0.88rem; font-weight: 700; }
 .quiz-option-list { display: grid; gap: 10px; margin: 14px 0; }
-.quiz-option-row { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; gap: 10px; align-items: center; }
-.quiz-option-row input[type="radio"] { accent-color: #14b8a6; }
+.quiz-option-row { display: grid; grid-template-columns: minmax(0, 1fr) 88px auto; gap: 10px; align-items: center; padding: 8px; border: 1px solid transparent; border-radius: 8px; transition: border-color 0.15s, background 0.15s; }
+.quiz-option-row.is-correct { border-color: rgba(20, 184, 166, 0.55); background: rgba(20, 184, 166, 0.08); }
+.quiz-option-row.is-correct .admin-input { border-color: rgba(20, 184, 166, 0.7); }
+.quiz-correct-toggle { display: block; cursor: pointer; }
+.quiz-correct-toggle input { position: absolute; opacity: 0; pointer-events: none; }
+.quiz-correct-toggle span { display: grid; place-items: center; min-height: 34px; padding: 0 10px; border: 1px solid #334155; border-radius: 6px; background: #0f172a; color: #94a3b8; font-size: 0.8rem; font-weight: 800; white-space: nowrap; transition: border-color 0.15s, background 0.15s, color 0.15s; }
+.quiz-correct-toggle:hover span { border-color: #14b8a6; color: #99f6e4; }
+.quiz-correct-toggle input:checked + span { border-color: #14b8a6; background: #0f766e; color: #fff; }
+.quiz-correct-toggle input:focus-visible + span { outline: 2px solid #38bdf8; outline-offset: 2px; }
+.quiz-option-row .admin-btn.sm { width: 88px; min-height: 34px; padding: 0 10px; font-weight: 800; }
 .quiz-editor-actions { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
 
 .device-content { display: grid; grid-template-columns: 1fr 360px; align-items: start; }
@@ -167,7 +175,7 @@
   .quiz-manager-group { grid-template-columns: 1fr; }
   .device-manager-list { grid-template-columns: 1fr; }
   .device-content { grid-template-columns: 1fr; }
-  .quiz-option-row { grid-template-columns: 18px minmax(0, 1fr); }
+  .quiz-option-row { grid-template-columns: minmax(0, 1fr) 88px; }
   .quiz-option-row .admin-btn { grid-column: 2; justify-self: start; }
 }
 

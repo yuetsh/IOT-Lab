@@ -8,7 +8,7 @@ export default function ProgressSummary({ summary }) {
   return (
     <section className={`student-panel progress-summary ${tone}`}>
       <div>
-        <p className="panel-label">总体完成率</p>
+        <p className="panel-label">检测总体完成率</p>
         <div className="progress-number">{percent}%</div>
         <p className="panel-muted">
           已完成 {formatCount(summary.completed_items, summary.total_items)} 项 · {statusLabel(summary.status)}

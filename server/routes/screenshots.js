@@ -46,7 +46,7 @@ router.post('/', (req, res, next) => {
   try {
     if (!req.file) return res.status(400).json({ error: '请选择要上传的文件' });
     if (!req.body.company_id) {
-      return res.status(400).json({ error: '缺少企业信息' });
+      return res.status(400).json({ error: '缺少检测小组信息' });
     }
     const { company_id, device_id } = req.body;
     const filename = req.file.filename;

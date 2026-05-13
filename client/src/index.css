@@ -6,6 +6,7 @@
 :root {
   color: #e5eefb;
   background: #08111f;
+  --meter-track: #1e293b;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
@@ -19,4 +20,312 @@ body {
 button,
 input {
   font: inherit;
+}
+
+.theme-toggle {
+  position: fixed;
+  right: 16px;
+  top: 14px;
+  z-index: 1100;
+  min-width: 74px;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  background: #111827;
+  color: #e5eefb;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+  cursor: pointer;
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.admin-main {
+  padding-right: 112px;
+}
+
+.theme-toggle:hover {
+  border-color: #14b8a6;
+  color: #99f6e4;
+}
+
+:root[data-theme="light"] {
+  color: #172033;
+  background: #e9dfcf;
+  --meter-track: #dccdb6;
+}
+
+:root[data-theme="light"] body,
+:root[data-theme="light"] .admin-layout,
+:root[data-theme="light"] .admin-main {
+  background: #e9dfcf;
+  color: #172033;
+}
+
+:root[data-theme="light"] .theme-toggle,
+:root[data-theme="light"] .student-panel,
+:root[data-theme="light"] .screenshot-standalone,
+:root[data-theme="light"] .device-card,
+:root[data-theme="light"] .company-card,
+:root[data-theme="light"] .admin-kpi-card,
+:root[data-theme="light"] .admin-chart-card,
+:root[data-theme="light"] .company-progress-card,
+:root[data-theme="light"] .item-row,
+:root[data-theme="light"] .device-manager-item,
+:root[data-theme="light"] .stat-card,
+:root[data-theme="light"] .screenshot-thumb,
+:root[data-theme="light"] .progress-table,
+:root[data-theme="light"] .quiz-editor-card {
+  background: #f7efe3;
+  border-color: #d6c6ad;
+  color: #172033;
+  box-shadow: 0 14px 34px rgba(91, 68, 39, 0.1);
+}
+
+:root[data-theme="light"] .project-header,
+:root[data-theme="light"] .student-hero {
+  background: linear-gradient(135deg, #f8f0e4, #eadcc7);
+  border-color: #d6c6ad;
+}
+
+:root[data-theme="light"] .admin-sidebar,
+:root[data-theme="light"] .checklist-editor,
+:root[data-theme="light"] .device-video-panel,
+:root[data-theme="light"] .progress-table th,
+:root[data-theme="light"] .completion-donut span,
+:root[data-theme="light"] .admin-input,
+:root[data-theme="light"] .admin-textarea,
+:root[data-theme="light"] .checklist-card,
+:root[data-theme="light"] .quiz-choice,
+:root[data-theme="light"] .upload-merged-repick,
+:root[data-theme="light"] .quiz-correct-toggle span {
+  background: #efe4d1;
+  border-color: #cdbb9f;
+  color: #172033;
+}
+
+:root[data-theme="light"] .item-row.indent,
+:root[data-theme="light"] .cl-item,
+:root[data-theme="light"] .company-device-options li,
+:root[data-theme="light"] .device-video-dropzone {
+  background: #eadfcc;
+  border-color: #cdbb9f;
+  color: #3f362b;
+}
+
+:root[data-theme="light"] .admin-btn.danger {
+  background: #f0d6ce;
+  color: #8a2f25;
+  border: 1px solid #d9aa9e;
+}
+
+:root[data-theme="light"] .admin-btn {
+  background: #eadfcc;
+  border: 1px solid #cdbb9f;
+  color: #3f362b;
+}
+
+:root[data-theme="light"] .admin-btn:hover {
+  background: #ded0b8;
+  color: #172033;
+}
+
+:root[data-theme="light"] .admin-btn.primary {
+  background: #0f766e;
+  border-color: #0f766e;
+  color: #fff;
+}
+
+:root[data-theme="light"] .admin-btn.danger:hover {
+  background: #e6c2b8;
+  color: #6f211a;
+}
+
+:root[data-theme="light"] .admin-btn.primary:hover {
+  background: #0f766e;
+}
+
+:root[data-theme="light"] .admin-btn:disabled {
+  opacity: 0.55;
+}
+
+:root[data-theme="light"] .admin-error {
+  color: #9f1239;
+}
+
+:root[data-theme="light"] .company-progress-card.complete {
+  border-color: rgba(15, 118, 110, 0.55);
+}
+
+:root[data-theme="light"] .company-progress-card.progress {
+  border-color: rgba(180, 83, 9, 0.55);
+}
+
+:root[data-theme="light"] .company-progress-card.idle {
+  border-color: #b8a78e;
+}
+
+:root[data-theme="light"] .sidebar-title,
+:root[data-theme="light"] .admin-page-header h1,
+:root[data-theme="light"] .section-title,
+:root[data-theme="light"] .admin-section-head h2,
+:root[data-theme="light"] .chart-heading,
+:root[data-theme="light"] .quiz-manager-group-head h2,
+:root[data-theme="light"] .project-header h1,
+:root[data-theme="light"] .student-hero h1,
+:root[data-theme="light"] .workspace-header h2,
+:root[data-theme="light"] .section-heading,
+:root[data-theme="light"] .activity-guide h2,
+:root[data-theme="light"] .panel-heading-row h2,
+:root[data-theme="light"] .progress-number,
+:root[data-theme="light"] .device-progress-head h3,
+:root[data-theme="light"] .quiz-panel h2,
+:root[data-theme="light"] .dropzone-copy strong,
+:root[data-theme="light"] .company-progress-card h3,
+:root[data-theme="light"] .company-progress-card header strong,
+:root[data-theme="light"] .admin-kpi-card strong,
+:root[data-theme="light"] .quiz-editor-head h2,
+:root[data-theme="light"] .company-cell {
+  color: #0f172a;
+}
+
+:root[data-theme="light"] .project-eyebrow,
+:root[data-theme="light"] .panel-label,
+:root[data-theme="light"] .admin-page-header p,
+:root[data-theme="light"] .quiz-editor-head span,
+:root[data-theme="light"] .device-video-label,
+:root[data-theme="light"] .chart-heading strong,
+:root[data-theme="light"] .quiz-editor-head strong,
+:root[data-theme="light"] .donut-legend strong {
+  color: #0f766e;
+}
+
+:root[data-theme="light"] .project-intro,
+:root[data-theme="light"] .center-msg,
+:root[data-theme="light"] .empty-msg,
+:root[data-theme="light"] .workspace-label,
+:root[data-theme="light"] .section-description,
+:root[data-theme="light"] .panel-muted,
+:root[data-theme="light"] .admin-field,
+:root[data-theme="light"] .admin-kpi-card span,
+:root[data-theme="light"] .bar-row,
+:root[data-theme="light"] .donut-legend div,
+:root[data-theme="light"] .vertical-bar,
+:root[data-theme="light"] .vertical-bar strong,
+:root[data-theme="light"] .admin-empty-inline,
+:root[data-theme="light"] .company-progress-card p,
+:root[data-theme="light"] .company-device-list > div,
+:root[data-theme="light"] .company-device-options li,
+:root[data-theme="light"] .company-device-list em,
+:root[data-theme="light"] .admin-section-head p,
+:root[data-theme="light"] .item-count,
+:root[data-theme="light"] .cl-index,
+:root[data-theme="light"] .cl-empty,
+:root[data-theme="light"] .progress-cell,
+:root[data-theme="light"] .stat-name,
+:root[data-theme="light"] .stat-label,
+:root[data-theme="light"] .group-title,
+:root[data-theme="light"] .thumb-info,
+:root[data-theme="light"] .dropzone-copy small,
+:root[data-theme="light"] .uploaded-preview,
+:root[data-theme="light"] .latest-shot {
+  color: #6f6253;
+}
+
+:root[data-theme="light"] .item-row,
+:root[data-theme="light"] .device-expand-btn,
+:root[data-theme="light"] .cl-label,
+:root[data-theme="light"] .progress-table th,
+:root[data-theme="light"] .quiz-prompt {
+  color: #172033;
+}
+
+:root[data-theme="light"] .sidebar-btn {
+  color: #6f6253;
+}
+
+:root[data-theme="light"] .sidebar-btn:hover,
+:root[data-theme="light"] .sidebar-btn.active,
+:root[data-theme="light"] .company-card:hover,
+:root[data-theme="light"] .checklist-card:hover,
+:root[data-theme="light"] .quiz-choice:hover,
+:root[data-theme="light"] .device-video-dropzone:hover:not(.uploading) {
+  background: #eadfcc;
+  color: #0f172a;
+}
+
+:root[data-theme="light"] .sidebar-btn.active {
+  background: #dbe8d5;
+  color: #0f766e;
+  border-left-color: #0f766e;
+  font-weight: 800;
+}
+
+:root[data-theme="light"] .sidebar-btn:hover:not(.active) {
+  background: #eadfcc;
+  color: #3f362b;
+}
+
+:root[data-theme="light"] .theme-toggle:hover {
+  background: #eadfcc;
+  color: #0f766e;
+}
+
+:root[data-theme="light"] .summary-meter,
+:root[data-theme="light"] .device-meter,
+:root[data-theme="light"] .company-meter,
+:root[data-theme="light"] .mini-track,
+:root[data-theme="light"] .bar-track,
+:root[data-theme="light"] .device-video-progress-track {
+  background: #dccdb6;
+}
+
+:root[data-theme="light"] .quiz-choice.selected {
+  background: #dbe8d5;
+  color: #0f3f38;
+}
+
+:root[data-theme="light"] .quiz-option-row.is-correct {
+  background: rgba(20, 184, 166, 0.12);
+}
+
+:root[data-theme="light"] .quiz-option-row.is-correct .admin-input,
+:root[data-theme="light"] .admin-input:focus,
+:root[data-theme="light"] .admin-textarea:focus {
+  border-color: #0f766e;
+}
+
+:root[data-theme="light"] .activity-index-pill,
+:root[data-theme="light"] .checklist-card.checked .check-label,
+:root[data-theme="light"] .quiz-pass,
+:root[data-theme="light"] .company-device-options li.complete,
+:root[data-theme="light"] .progress-cell.done,
+:root[data-theme="light"] .stat-count,
+:root[data-theme="light"] .device-video-progress span,
+:root[data-theme="light"] .link-btn {
+  color: #0f766e;
+}
+
+:root[data-theme="light"] .company-device-options li.complete,
+:root[data-theme="light"] .progress-cell.done {
+  background: rgba(20, 184, 166, 0.12);
+  border-color: rgba(15, 118, 110, 0.34);
+}
+
+:root[data-theme="light"] .company-device-options li.idle {
+  background: #eadfcc;
+  border-color: #cdbb9f;
+  color: #6f6253;
+}
+
+:root[data-theme="light"] .progress-table th,
+:root[data-theme="light"] .progress-table td,
+:root[data-theme="light"] .cl-add {
+  border-color: #d6c6ad;
+}
+
+:root[data-theme="light"] .upload-merged-repick:hover,
+:root[data-theme="light"] .quiz-correct-toggle:hover span,
+:root[data-theme="light"] .device-video-dropzone:hover:not(.uploading) {
+  color: #0f766e;
 }

@@ -19,13 +19,13 @@ router.get('/', async (req, res) => {
 router.post('/', adminAuth, async (req, res) => {
   try {
     if (!req.body.name || typeof req.body.name !== 'string') {
-      return res.status(400).json({ error: '请填写企业名称' });
+      return res.status(400).json({ error: '请填写检测小组名称' });
     }
     const company = db.createCompany(req.body.name);
     res.status(201).json(company);
   } catch (e) {
     if (e.message && e.message.includes('UNIQUE constraint failed')) {
-      return res.status(409).json({ error: '企业名称已存在' });
+      return res.status(409).json({ error: '检测小组名称已存在' });
     }
     res.status(500).json({ error: e.message });
   }

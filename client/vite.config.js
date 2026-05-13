@@ -4,6 +4,9 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [tailwindcss(), react()],
+  build: {
+    target: 'chrome90',
+  },
   server: {
     proxy: {
       '/api': 'http://localhost:3000',

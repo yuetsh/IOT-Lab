@@ -18,7 +18,7 @@ export default function ScreenshotGallery() {
   }, []);
 
   async function handleDelete(id) {
-    if (!confirm('确认删除此截图？')) return;
+    if (!confirm('确认删除此检测记录截图？')) return;
     try {
       await api.adminDeleteScreenshot(id);
       load();
@@ -46,7 +46,7 @@ export default function ScreenshotGallery() {
 
   if (loading) return <div className="center-msg">加载中...</div>;
   if (error) return <div className="center-msg admin-error">{error}</div>;
-  if (!screenshots.length) return <div className="center-msg">暂无截图</div>;
+  if (!screenshots.length) return <div className="center-msg">暂无检测记录截图</div>;
 
   // Group by company_id
   const groups = {};
@@ -59,7 +59,7 @@ export default function ScreenshotGallery() {
 
   return (
     <div>
-      <h2 className="section-title">截图管理</h2>
+      <h2 className="section-title">检测记录截图管理</h2>
       {Object.entries(groups).map(([, group]) => (
         <div key={group.name} className="screenshot-group">
           <h3 className="group-title">{group.name}</h3>

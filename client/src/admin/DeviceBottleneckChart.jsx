@@ -10,7 +10,7 @@ export default function DeviceBottleneckChart({ data }) {
   return (
     <section className="admin-chart-card">
       <div className="chart-heading">
-        <span>设备瓶颈</span>
+        <span>设备检测进度短板</span>
       </div>
       {sortedData.length === 0 ? (
         <p className="admin-empty-inline">暂无设备数据</p>

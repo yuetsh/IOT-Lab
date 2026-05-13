@@ -169,30 +169,33 @@ export default function QuizManager() {
               />
             </label>
             <label className="admin-field">
-              <span>题干</span>
+              <span>题干（选填）</span>
               <textarea
                 className="admin-textarea"
                 value={form.prompt}
                 onChange={e => updateForm(form.stage_key, { prompt: e.target.value })}
-                placeholder="输入单选题题干"
+                placeholder="可填写题目说明，也可以留空"
               />
             </label>
             <div className="quiz-option-list">
               {form.options.map((option, index) => (
-                <div key={index} className="quiz-option-row">
-                  <input
-                    type="radio"
-                    name={`${form.stage_key}-correct`}
-                    checked={option.is_correct}
-                    onChange={() => setCorrectOption(form.stage_key, index)}
-                    aria-label={`设置第 ${index + 1} 个选项为正确答案`}
-                  />
+                <div key={index} className={`quiz-option-row${option.is_correct ? ' is-correct' : ''}`}>
                   <input
                     className="admin-input wide"
                     value={option.label}
                     onChange={e => updateOption(form.stage_key, index, { label: e.target.value })}
                     placeholder={`选项 ${index + 1}`}
                   />
+                  <label className="quiz-correct-toggle">
+                    <input
+                      type="radio"
+                      name={`${form.stage_key}-correct`}
+                      checked={option.is_correct}
+                      onChange={() => setCorrectOption(form.stage_key, index)}
+                      aria-label={`设置第 ${index + 1} 个选项为正确答案`}
+                    />
+                    <span>{option.is_correct ? '正确答案' : '设为正确'}</span>
+                  </label>
                   <button
                     className="admin-btn danger sm"
                     type="button"

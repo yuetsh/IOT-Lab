@@ -30,7 +30,6 @@ function validateQuizPayload(body) {
     .filter(option => option.label);
 
   if (!title) return { error: '请填写检测名称' };
-  if (!prompt) return { error: '请填写题干' };
   if (normalizedOptions.length < 2) return { error: '至少需要两个选项' };
   if (normalizedOptions.filter(option => option.is_correct).length !== 1) {
     return { error: '请设置且仅设置一个正确答案' };
@@ -105,5 +104,7 @@ router.put('/admin/:stage_key', adminAuth, async (req, res) => {
     res.status(500).json({ error: e.message });
   }
 });
+
+router.validateQuizPayload = validateQuizPayload;
 
 module.exports = router;

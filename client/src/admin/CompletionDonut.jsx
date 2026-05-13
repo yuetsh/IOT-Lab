@@ -20,13 +20,13 @@ export default function CompletionDonut({ data }) {
     <section className="admin-chart-card">
       <div className="chart-heading">
         <span>完成状态占比</span>
-        <strong>{total} 家</strong>
+        <strong>{total} 组</strong>
       </div>
       <div className="donut-row">
         <div
           className="completion-donut"
-          style={{ background: total ? `conic-gradient(${stops})` : '#1e293b' }}
-          aria-label="公司完成状态占比"
+          style={{ background: total ? `conic-gradient(${stops})` : 'var(--meter-track, #1e293b)' }}
+          aria-label="检测小组完成状态占比"
         >
           <span>{total}</span>
         </div>

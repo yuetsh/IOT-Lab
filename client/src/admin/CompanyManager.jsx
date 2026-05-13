@@ -27,7 +27,7 @@ export default function CompanyManager() {
   }
 
   async function handleDelete(id) {
-    if (!confirm('确认删除此公司？相关进度和截图将一并删除。')) return;
+    if (!confirm('确认删除此检测小组？相关进度和检测记录截图将一并删除。')) return;
     try {
       await api.adminDeleteCompany(id);
       load();
@@ -36,14 +36,14 @@ export default function CompanyManager() {
 
   return (
     <div>
-      <h2 className="section-title">公司管理</h2>
+      <h2 className="section-title">检测小组管理</h2>
       {error && <p className="admin-error">{error}</p>}
       <form className="add-form" onSubmit={handleAdd}>
         <input
           className="admin-input"
           value={newName}
           onChange={e => setNewName(e.target.value)}
-          placeholder="输入公司名称"
+          placeholder="输入检测小组名称"
         />
         <button className="admin-btn primary" type="submit">添加</button>
       </form>

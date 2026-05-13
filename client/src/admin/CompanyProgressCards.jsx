@@ -5,7 +5,7 @@ export default function CompanyProgressCards({ companies }) {
   if (!companies.length) {
     return (
       <section className="admin-chart-card">
-        <p className="admin-empty-inline">暂无公司，请先添加公司。</p>
+        <p className="admin-empty-inline">暂无检测小组，请先添加检测小组。</p>
       </section>
     );
   }
@@ -19,7 +19,7 @@ export default function CompanyProgressCards({ companies }) {
             <header>
               <div>
                 <h3>{company.company_name}</h3>
-                <p>{statusLabel(company.status)} · 未完成 {company.unfinished_items} 项 · 截图 {company.screenshot_count} 张</p>
+                <p>{statusLabel(company.status)} · 未完成 {company.unfinished_items} 项 · 检测记录截图 {company.screenshot_count} 张</p>
               </div>
               <strong>{percent}%</strong>
             </header>

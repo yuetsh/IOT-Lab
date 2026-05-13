@@ -33,7 +33,7 @@ export default function DeviceManager() {
   }
 
   async function handleDelete(id) {
-    if (!confirm('确认删除此设备？其所有打勾项目将一并删除。')) return;
+    if (!confirm('确认删除此设备？其所有检测项将一并删除。')) return;
     try {
       await api.adminDeleteDevice(id);
       load();
@@ -73,14 +73,14 @@ export default function DeviceManager() {
 
   return (
     <div>
-      <h2 className="section-title">设备管理</h2>
+      <h2 className="section-title">物联网设备管理</h2>
       {error && <p className="admin-error">{error}</p>}
       <form className="add-form" onSubmit={handleAdd}>
         <input
           className="admin-input"
           value={newName}
           onChange={e => setNewName(e.target.value)}
-          placeholder="输入设备名称"
+          placeholder="输入物联网设备名称"
         />
         <button className="admin-btn primary" type="submit">添加设备</button>
       </form>
@@ -101,7 +101,7 @@ export default function DeviceManager() {
               <div className="device-content">
                 <ChecklistEditor device={device} onUpdate={load} />
                 <div className="device-video-panel">
-                  <p className="device-video-label">设备视频</p>
+                  <p className="device-video-label">设备检测演示视频</p>
                   {device.video_filename ? (
                     <div className="device-video-preview">
                       <video

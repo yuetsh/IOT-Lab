@@ -5,10 +5,10 @@ export default function CompanyRankChart({ data }) {
   return (
     <section className="admin-chart-card rank-chart">
       <div className="chart-heading">
-        <span>公司完成率排行</span>
+        <span>检测小组完成率排行</span>
       </div>
       {data.length === 0 ? (
-        <p className="admin-empty-inline">暂无公司数据</p>
+        <p className="admin-empty-inline">暂无检测小组数据</p>
       ) : (
         <div className="bar-list">
           {data.map(company => {

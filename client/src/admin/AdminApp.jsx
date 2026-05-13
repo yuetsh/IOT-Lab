@@ -9,18 +9,18 @@ import './admin.css';
 
 const TABS = [
   { path: '/admin/dashboard', label: '数据看板' },
-  { path: '/admin/companies', label: '公司管理' },
+  { path: '/admin/companies', label: '小组管理' },
   { path: '/admin/devices', label: '设备管理' },
   { path: '/admin/quizzes', label: '检测管理' },
   { path: '/admin/progress', label: '检测进度' },
-  { path: '/admin/screenshots', label: '截图管理' },
+  { path: '/admin/screenshots', label: '检测记录' },
 ];
 
 export default function AdminApp() {
   return (
     <div className="admin-layout">
       <aside className="admin-sidebar">
-        <h2 className="sidebar-title">教师管理后台</h2>
+        <h2 className="sidebar-title">物联网检测教师后台</h2>
         <nav>
           {TABS.map(t => (
             <NavLink
