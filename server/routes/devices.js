@@ -91,7 +91,7 @@ router.put('/:id/video', adminAuth, (req, res, next) => {
     const device = db.getDevice(req.params.id);
     if (!device) return res.status(404).json({ error: '设备不存在' });
     if (device.video_filename) {
-      fs.unlink(path.join(UPLOAD_DIR, device.video_filename), () => {});
+      fs.unlink(path.join(UPLOAD_DIR, device.video_filename), (err) => { if (err) console.error('Failed to unlink video:', err.message); });
     }
     const updated = db.setDeviceVideo(req.params.id, req.file.filename);
     res.json(updated);
@@ -106,7 +106,7 @@ router.delete('/:id/video', adminAuth, async (req, res) => {
     const device = db.getDevice(req.params.id);
     if (!device) return res.status(404).json({ error: '设备不存在' });
     if (device.video_filename) {
-      fs.unlink(path.join(UPLOAD_DIR, device.video_filename), () => {});
+      fs.unlink(path.join(UPLOAD_DIR, device.video_filename), (err) => { if (err) console.error('Failed to unlink video:', err.message); });
     }
     const updated = db.clearDeviceVideo(req.params.id);
     res.json(updated);
