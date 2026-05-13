@@ -24,6 +24,9 @@ export const api = {
   getCompanySummary: (companyId) => request('GET', `/progress/company/${companyId}/summary`),
   addProgress: (company_id, checklist_item_id) => request('POST', '/progress', { company_id, checklist_item_id }),
   removeProgress: (company_id, item_id) => request('DELETE', `/progress/${company_id}/${item_id}`),
+  submitQuizAnswer: (stage_key, company_id, option_id) => (
+    request('POST', `/quizzes/${stage_key}/submissions`, { company_id, option_id })
+  ),
   uploadScreenshot: (company_id, device_id, file) => {
     const form = new FormData();
     form.append('company_id', company_id);
@@ -46,6 +49,12 @@ export const api = {
       adminCreateDevice: (name, sort_order = 0) => adminRequest('POST', '/devices', { name, sort_order }),
       adminUpdateDevice: (id, name, sort_order) => adminRequest('PUT', `/devices/${id}`, { name, sort_order }),
       adminDeleteDevice: (id) => adminRequest('DELETE', `/devices/${id}`),
+      adminUploadDeviceVideo: (id, file) => {
+        const form = new FormData();
+        form.append('file', file);
+        return adminRequest('PUT', `/devices/${id}/video`, form);
+      },
+      adminDeleteDeviceVideo: (id) => adminRequest('DELETE', `/devices/${id}/video`),
 
       adminCreateItem: (device_id, label, sort_order = 0) => adminRequest('POST', '/checklist-items', { device_id, label, sort_order }),
       adminUpdateItem: (id, label, sort_order) => adminRequest('PUT', `/checklist-items/${id}`, { label, sort_order }),
@@ -54,6 +63,14 @@ export const api = {
       adminGetAllProgress: () => adminRequest('GET', '/progress/admin/all'),
       adminGetStats: () => adminRequest('GET', '/progress/admin/stats'),
       adminGetOverview: () => adminRequest('GET', '/progress/admin/overview'),
+
+      adminGetQuizzes: () => adminRequest('GET', '/quizzes/admin'),
+      adminCreateQuiz: (activity_key, title, prompt, options) => (
+        adminRequest('POST', '/quizzes/admin', { activity_key, title, prompt, options })
+      ),
+      adminUpdateQuiz: (stage_key, title, prompt, options) => (
+        adminRequest('PUT', `/quizzes/admin/${stage_key}`, { title, prompt, options })
+      ),
 
       adminGetAllScreenshots: () => adminRequest('GET', '/screenshots'),
       adminDeleteScreenshot: (id) => adminRequest('DELETE', `/screenshots/${id}`),
