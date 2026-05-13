@@ -51,7 +51,7 @@ export default function ScreenshotGallery() {
                   onClick={() => setLightbox(s)}
                 />
                 <div className="thumb-info">
-                  <span>{s.device_name || '无设备'}</span>
+                  <span>{s.original_name}</span>
                   <button className="admin-btn danger sm" onClick={() => handleDelete(s.id)}>删除</button>
                 </div>
               </div>
