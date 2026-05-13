@@ -5,17 +5,21 @@ export default function ProgressOverview() {
   const [data, setData] = useState([]);
   const [stats, setStats] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
+    let alive = true;
     Promise.all([api.adminGetAllProgress(), api.adminGetStats()])
       .then(([progress, stats]) => {
-        setData(progress);
-        setStats(stats);
+        if (alive) { setData(progress); setStats(stats); }
       })
-      .finally(() => setLoading(false));
+      .catch(e => { if (alive) setError(e.message); })
+      .finally(() => { if (alive) setLoading(false); });
+    return () => { alive = false; };
   }, []);
 
   if (loading) return <div className="center-msg">加载中...</div>;
+  if (error) return <div className="center-msg admin-error">{error}</div>;
   if (!data.length) return <div className="center-msg">暂无数据</div>;
 
   // Build matrix: companies × devices

@@ -9,7 +9,13 @@ export default function DeviceManager() {
   const [error, setError] = useState('');
 
   const load = () => api.adminGetDevices().then(setDevices).catch(e => setError(e.message));
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    let alive = true;
+    api.adminGetDevices()
+      .then(d => { if (alive) setDevices(d); })
+      .catch(e => { if (alive) setError(e.message); });
+    return () => { alive = false; };
+  }, []);
 
   async function handleAdd(e) {
     e.preventDefault();

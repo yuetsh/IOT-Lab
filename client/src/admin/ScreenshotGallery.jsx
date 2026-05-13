@@ -5,9 +5,17 @@ export default function ScreenshotGallery() {
   const [screenshots, setScreenshots] = useState([]);
   const [lightbox, setLightbox] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  const load = () => api.adminGetAllScreenshots().then(setScreenshots).finally(() => setLoading(false));
-  useEffect(() => { load(); }, []);
+  const load = () => api.adminGetAllScreenshots().then(setScreenshots).catch(e => setError(e.message)).finally(() => setLoading(false));
+  useEffect(() => {
+    let alive = true;
+    api.adminGetAllScreenshots()
+      .then(d => { if (alive) setScreenshots(d); })
+      .catch(e => { if (alive) setError(e.message); })
+      .finally(() => { if (alive) setLoading(false); });
+    return () => { alive = false; };
+  }, []);
 
   async function handleDelete(id) {
     if (!confirm('确认删除此截图？')) return;
@@ -18,23 +26,24 @@ export default function ScreenshotGallery() {
   }
 
   if (loading) return <div className="center-msg">加载中...</div>;
+  if (error) return <div className="center-msg admin-error">{error}</div>;
   if (!screenshots.length) return <div className="center-msg">暂无截图</div>;
 
-  // Group by company
+  // Group by company_id
   const groups = {};
   for (const s of screenshots) {
-    if (!groups[s.company_name]) groups[s.company_name] = [];
-    groups[s.company_name].push(s);
+    if (!groups[s.company_id]) groups[s.company_id] = { name: s.company_name, shots: [] };
+    groups[s.company_id].shots.push(s);
   }
 
   return (
     <div>
       <h2 className="section-title">截图管理</h2>
-      {Object.entries(groups).map(([companyName, shots]) => (
-        <div key={companyName} className="screenshot-group">
-          <h3 className="group-title">{companyName}</h3>
+      {Object.entries(groups).map(([, group]) => (
+        <div key={group.name} className="screenshot-group">
+          <h3 className="group-title">{group.name}</h3>
           <div className="screenshot-grid">
-            {shots.map(s => (
+            {group.shots.map(s => (
               <div key={s.id} className="screenshot-thumb">
                 <img
                   src={`/uploads/${s.filename}`}

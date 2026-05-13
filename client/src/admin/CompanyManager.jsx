@@ -7,7 +7,13 @@ export default function CompanyManager() {
   const [error, setError] = useState('');
 
   const load = () => api.adminGetCompanies().then(setCompanies).catch(e => setError(e.message));
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    let alive = true;
+    api.adminGetCompanies()
+      .then(d => { if (alive) setCompanies(d); })
+      .catch(e => { if (alive) setError(e.message); });
+    return () => { alive = false; };
+  }, []);
 
   async function handleAdd(e) {
     e.preventDefault();

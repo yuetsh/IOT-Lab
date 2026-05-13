@@ -35,7 +35,7 @@ export const api = {
   // Admin methods — include X-Admin-Password header
   ...(() => {
     const adminRequest = (method, path, body) =>
-      request(method, path, body, { 'x-admin-password': 'admin123' });
+      request(method, path, body, { 'x-admin-password': import.meta.env.VITE_ADMIN_PASSWORD || 'admin123' });
     return {
       adminGetCompanies: () => adminRequest('GET', '/companies'),
       adminCreateCompany: (name) => adminRequest('POST', '/companies', { name }),
