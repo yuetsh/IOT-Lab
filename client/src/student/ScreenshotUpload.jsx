@@ -25,6 +25,7 @@ export default function ScreenshotUpload({ companyId, deviceId }) {
   return (
     <div className="screenshot-upload">
       <input
+        key={status === 'success' ? 'reset' : 'active'}
         type="file"
         accept="image/*"
         onChange={e => { setFile(e.target.files[0]); setStatus(''); setMessage(''); }}

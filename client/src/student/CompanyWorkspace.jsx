@@ -6,6 +6,7 @@ import './student.css';
 export default function CompanyWorkspace({ company, onChangeCompany }) {
   const [devices, setDevices] = useState([]);
   const [checkedIds, setCheckedIds] = useState(new Set());
+  const [pendingIds, setPendingIds] = useState(new Set());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -20,7 +21,8 @@ export default function CompanyWorkspace({ company, onChangeCompany }) {
   }, [company.id]);
 
   async function handleToggle(itemId, checked) {
-    // Optimistic update
+    if (pendingIds.has(itemId)) return;
+    setPendingIds(prev => new Set(prev).add(itemId));
     setCheckedIds(prev => {
       const next = new Set(prev);
       checked ? next.add(itemId) : next.delete(itemId);
@@ -33,12 +35,13 @@ export default function CompanyWorkspace({ company, onChangeCompany }) {
         await api.removeProgress(company.id, itemId);
       }
     } catch {
-      // Revert on failure
       setCheckedIds(prev => {
         const next = new Set(prev);
         checked ? next.delete(itemId) : next.add(itemId);
         return next;
       });
+    } finally {
+      setPendingIds(prev => { const n = new Set(prev); n.delete(itemId); return n; });
     }
   }
 
