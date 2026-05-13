@@ -21,21 +21,33 @@ const storage = multer.diskStorage({
   },
 });
 
+const ALLOWED_EXT = new Set(['.jpg', '.jpeg', '.png', '.gif', '.webp']);
+
 const upload = multer({
   storage,
   fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) {
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (file.mimetype.startsWith('image/') && ALLOWED_EXT.has(ext)) {
       cb(null, true);
     } else {
-      cb(new Error('Only image files are allowed'));
+      cb(new Error('Only image files are allowed (.jpg, .jpeg, .png, .gif, .webp)'));
     }
   },
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
 });
 
-// POST / — upload screenshot
-router.post('/', upload.single('file'), async (req, res) => {
+// Open route — students upload their own screenshots without authentication
+router.post('/', (req, res, next) => {
+  upload.single('file')(req, res, (err) => {
+    if (err) return res.status(400).json({ error: err.message });
+    next();
+  });
+}, async (req, res) => {
   try {
+    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+    if (!req.body.company_id) {
+      return res.status(400).json({ error: 'company_id is required' });
+    }
     const { company_id, device_id } = req.body;
     const filename = req.file.filename;
     const original_name = req.file.originalname;
@@ -72,7 +84,7 @@ router.delete('/:id', adminAuth, async (req, res) => {
     const filename = db.deleteScreenshot(req.params.id);
     if (filename) {
       const filepath = path.join(UPLOAD_DIR, filename);
-      fs.unlink(filepath, () => {}); // best-effort, ignore errors
+      fs.unlink(filepath, (err) => { if (err) console.error('Failed to unlink screenshot:', err.message); });
     }
     res.status(204).end();
   } catch (e) {

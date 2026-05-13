@@ -18,6 +18,9 @@ router.get('/', async (req, res) => {
 // POST / [adminAuth]
 router.post('/', adminAuth, async (req, res) => {
   try {
+    if (!req.body.name || typeof req.body.name !== 'string') {
+      return res.status(400).json({ error: 'name is required' });
+    }
     const company = db.createCompany(req.body.name);
     res.status(201).json(company);
   } catch (e) {

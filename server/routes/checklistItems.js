@@ -8,6 +8,9 @@ const adminAuth = require('../middleware/adminAuth');
 // POST / [adminAuth]
 router.post('/', adminAuth, async (req, res) => {
   try {
+    if (!req.body.device_id || !req.body.label) {
+      return res.status(400).json({ error: 'device_id and label are required' });
+    }
     const { device_id, label, sort_order } = req.body;
     const item = db.createChecklistItem(device_id, label, sort_order);
     res.status(201).json(item);

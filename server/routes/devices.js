@@ -18,6 +18,9 @@ router.get('/', async (req, res) => {
 // POST / [adminAuth]
 router.post('/', adminAuth, async (req, res) => {
   try {
+    if (!req.body.name || typeof req.body.name !== 'string') {
+      return res.status(400).json({ error: 'name is required' });
+    }
     const { name, sort_order } = req.body;
     const device = db.createDevice(name, sort_order);
     res.status(201).json(device);
