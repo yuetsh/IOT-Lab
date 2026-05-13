@@ -6,6 +6,7 @@ import ScreenshotBarChart from './ScreenshotBarChart';
 import DeviceBottleneckChart from './DeviceBottleneckChart';
 import CompanyProgressCards from './CompanyProgressCards';
 import { api } from '../api';
+import './admin.css';
 
 export default function AdminDashboard() {
   const [overview, setOverview] = useState(null);

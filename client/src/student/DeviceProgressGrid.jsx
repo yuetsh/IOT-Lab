@@ -1,15 +1,13 @@
-import { Card, CardContent } from '@heroui/react';
 import DeviceProgressCard from './DeviceProgressCard';
 import { deviceColor } from '../dashboardMetrics';
+import './student.css';
 
 export default function DeviceProgressGrid({ devices, onToggle }) {
   if (!devices.length) {
     return (
-      <Card className="student-panel empty-panel">
-        <CardContent>
-          <p>暂无设备清单，请联系教师添加。</p>
-        </CardContent>
-      </Card>
+      <section className="student-panel empty-panel">
+        <p>暂无设备清单，请联系教师添加。</p>
+      </section>
     );
   }
 

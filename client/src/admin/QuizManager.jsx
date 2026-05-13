@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Button, Input, TextArea, RadioGroup, Radio, Card, CardContent, CardHeader } from '@heroui/react';
 import { api } from '../api';
 
 function createFallbackOptions() {
@@ -148,68 +147,72 @@ export default function QuizManager() {
           <section key={activity.activity_key} className="quiz-manager-group">
             <div className="quiz-manager-group-head">
               <h2>{activity.label}</h2>
-              <Button color="primary" onPress={() => handleCreate(activity)}>
+              <button className="admin-btn primary" type="button" onClick={() => handleCreate(activity)}>
                 新增检测题
-              </Button>
+              </button>
             </div>
             {forms.filter(form => form.activity_key === activity.activity_key).map(form => (
-              <Card key={form.stage_key}>
-                <CardHeader>
-                  <div className="flex-1">
-                    <span className="block text-xs text-blue-400 font-extrabold mb-1">{activity.label}</span>
-                    <h2 className="text-lg font-bold text-white m-0">{form.title}</h2>
-                  </div>
-                  {savedKey === form.stage_key && <strong className="text-teal-300 text-sm">已保存</strong>}
-                </CardHeader>
-                <CardContent>
-                  <form onSubmit={e => handleSave(e, form)} className="flex flex-col gap-4">
-                    <Input
-                      label="检测名称"
-                      value={form.title}
-                      onValueChange={v => updateForm(form.stage_key, { title: v })}
-                    />
-                    <TextArea
-                      label="题干"
-                      value={form.prompt}
-                      onValueChange={v => updateForm(form.stage_key, { prompt: v })}
-                      placeholder="输入单选题题干"
-                    />
-                    <RadioGroup
-                      label="正确答案"
-                      value={String(form.options.findIndex(option => option.is_correct))}
-                      onValueChange={v => setCorrectOption(form.stage_key, Number(v))}
-                    >
-                      {form.options.map((option, index) => (
-                        <div key={index} className="flex items-center gap-3 mb-2">
-                          <Radio value={String(index)} aria-label={`设置选项 ${index + 1} 为正确答案`} />
-                          <Input
-                            className="flex-1"
-                            value={option.label}
-                            onValueChange={v => updateOption(form.stage_key, index, { label: v })}
-                            placeholder={`选项 ${index + 1}`}
-                          />
-                          <Button
-                            color="danger"
-                            size="sm"
-                            onPress={() => removeOption(form.stage_key, index)}
-                            isDisabled={form.options.length <= 2}
-                          >
-                            删除
-                          </Button>
-                        </div>
-                      ))}
-                    </RadioGroup>
-                    <div className="flex justify-end gap-3 flex-wrap">
-                      <Button variant="flat" onPress={() => addOption(form.stage_key)}>
-                        添加选项
-                      </Button>
-                      <Button color="primary" type="submit">
-                        保存检测题
-                      </Button>
-                    </div>
-                  </form>
-                </CardContent>
-              </Card>
+              <form key={form.stage_key} className="quiz-editor-card" onSubmit={e => handleSave(e, form)}>
+            <div className="quiz-editor-head">
+              <div>
+                <span>{activity.label}</span>
+                <h2>{form.title}</h2>
+              </div>
+              {savedKey === form.stage_key && <strong>已保存</strong>}
+            </div>
+            <label className="admin-field">
+              <span>检测名称</span>
+              <input
+                className="admin-input wide"
+                value={form.title}
+                onChange={e => updateForm(form.stage_key, { title: e.target.value })}
+              />
+            </label>
+            <label className="admin-field">
+              <span>题干</span>
+              <textarea
+                className="admin-textarea"
+                value={form.prompt}
+                onChange={e => updateForm(form.stage_key, { prompt: e.target.value })}
+                placeholder="输入单选题题干"
+              />
+            </label>
+            <div className="quiz-option-list">
+              {form.options.map((option, index) => (
+                <div key={index} className="quiz-option-row">
+                  <input
+                    type="radio"
+                    name={`${form.stage_key}-correct`}
+                    checked={option.is_correct}
+                    onChange={() => setCorrectOption(form.stage_key, index)}
+                    aria-label={`设置第 ${index + 1} 个选项为正确答案`}
+                  />
+                  <input
+                    className="admin-input wide"
+                    value={option.label}
+                    onChange={e => updateOption(form.stage_key, index, { label: e.target.value })}
+                    placeholder={`选项 ${index + 1}`}
+                  />
+                  <button
+                    className="admin-btn danger sm"
+                    type="button"
+                    onClick={() => removeOption(form.stage_key, index)}
+                    disabled={form.options.length <= 2}
+                  >
+                    删除
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div className="quiz-editor-actions">
+              <button className="admin-btn" type="button" onClick={() => addOption(form.stage_key)}>
+                添加选项
+              </button>
+              <button className="admin-btn primary" type="submit">
+                保存检测题
+              </button>
+            </div>
+              </form>
             ))}
           </section>
         ))}

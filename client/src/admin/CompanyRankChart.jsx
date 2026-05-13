@@ -1,30 +1,30 @@
-import { Card, CardContent, CardHeader, ProgressBar } from '@heroui/react';
-import { clampPercent } from '../dashboardMetrics';
+import { clampPercent, statusTone } from '../dashboardMetrics';
+import './admin.css';
 
 export default function CompanyRankChart({ data }) {
   return (
-    <Card className="rank-chart">
-      <CardHeader>
-        <span className="text-gray-300 font-extrabold">公司完成率排行</span>
-      </CardHeader>
-      <CardContent>
-        {data.length === 0 ? (
-          <p className="text-gray-400">暂无公司数据</p>
-        ) : (
-          <div className="bar-list">
-            {data.map(company => {
-              const percent = clampPercent(company.completion_percent);
-              return (
-                <div key={company.company_id} className="bar-row">
-                  <span>{company.company_name}</span>
-                  <ProgressBar value={percent} color="success" className="h-2" />
-                  <strong>{percent}%</strong>
+    <section className="admin-chart-card rank-chart">
+      <div className="chart-heading">
+        <span>公司完成率排行</span>
+      </div>
+      {data.length === 0 ? (
+        <p className="admin-empty-inline">暂无公司数据</p>
+      ) : (
+        <div className="bar-list">
+          {data.map(company => {
+            const percent = clampPercent(company.completion_percent);
+            return (
+              <div key={company.company_id} className="bar-row">
+                <span>{company.company_name}</span>
+                <div className="bar-track">
+                  <i className={statusTone(company.status)} style={{ width: `${percent}%` }} />
                 </div>
-              );
-            })}
-          </div>
-        )}
-      </CardContent>
-    </Card>
+                <strong>{percent}%</strong>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </section>
   );
 }

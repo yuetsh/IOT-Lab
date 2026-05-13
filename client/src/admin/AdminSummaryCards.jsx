@@ -1,4 +1,4 @@
-import { Card, CardContent } from '@heroui/react';
+import './admin.css';
 
 const CARDS = [
   ['company_count', '公司总数'],
@@ -11,12 +11,10 @@ export default function AdminSummaryCards({ summary }) {
   return (
     <section className="admin-summary-grid">
       {CARDS.map(([key, label, suffix = '']) => (
-        <Card key={key}>
-          <CardContent>
-            <span className="block text-sm text-gray-400 mb-2">{label}</span>
-            <strong className="text-3xl font-extrabold text-white">{summary[key] ?? 0}{suffix}</strong>
-          </CardContent>
-        </Card>
+        <article key={key} className="admin-kpi-card">
+          <span>{label}</span>
+          <strong>{summary[key] ?? 0}{suffix}</strong>
+        </article>
       ))}
     </section>
   );

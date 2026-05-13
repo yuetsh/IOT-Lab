@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Alert, Button, Card, CardContent, Spinner } from '@heroui/react';
+import { Alert, Button, Spinner } from '@heroui/react';
 import { api } from '../api';
 import ProgressSummary from './ProgressSummary';
 import DeviceProgressGrid from './DeviceProgressGrid';
@@ -97,7 +97,7 @@ export default function StudentDashboard({ company, onChangeCompany }) {
       </header>
 
       {error && (
-        <Alert className="dashboard-alert" color="danger">
+        <Alert className="dashboard-alert" status="danger">
           <Alert.Content>
             <Alert.Description>{error}</Alert.Description>
           </Alert.Content>
@@ -107,13 +107,11 @@ export default function StudentDashboard({ company, onChangeCompany }) {
       <ActivityBlock index="活动一" title="设备清单">
         <div className="activity-grid">
           <ProgressSummary summary={summary} />
-          <Card className="student-panel activity-guide">
-            <CardContent>
-              <p className="panel-label">操作引导</p>
-              <h2>逐项确认设备调试任务</h2>
-              <p className="panel-muted">按照设备卡片中的清单勾选完成项，教师后台会同步看到每个公司的进度。</p>
-            </CardContent>
-          </Card>
+          <div className="student-panel activity-guide">
+            <p className="panel-label">操作引导</p>
+            <h2>逐项确认设备调试任务</h2>
+            <p className="panel-muted">按照设备卡片中的清单勾选完成项，教师后台会同步看到每个公司的进度。</p>
+          </div>
         </div>
         <DeviceProgressGrid devices={summary.devices || []} onToggle={handleToggle} />
       </ActivityBlock>

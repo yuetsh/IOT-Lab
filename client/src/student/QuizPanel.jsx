@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Button, RadioGroup, Radio } from '@heroui/react';
+import { Button } from '@heroui/react';
 import { api } from '../api';
+import './student.css';
 
 export default function QuizPanel({ companyId, quiz, onSubmitted }) {
   const [selectedId, setSelectedId] = useState(quiz.submission?.selected_option_id || '');
@@ -38,18 +39,25 @@ export default function QuizPanel({ companyId, quiz, onSubmitted }) {
       ) : (
         <form className="quiz-form" onSubmit={handleSubmit}>
           <p className="quiz-prompt">{quiz.prompt}</p>
-          <RadioGroup
-            value={String(selectedId)}
-            onValueChange={setSelectedId}
-          >
+          <div className="quiz-options">
             {quiz.options.map(option => (
-              <Radio key={option.id} value={String(option.id)}>
+              <label
+                key={option.id}
+                className={`quiz-choice${Number(selectedId) === Number(option.id) ? ' selected' : ''}`}
+              >
+                <input
+                  type="radio"
+                  name={quiz.stage_key}
+                  value={option.id}
+                  checked={Number(selectedId) === Number(option.id)}
+                  onChange={e => setSelectedId(e.target.value)}
+                />
                 {option.label}
-              </Radio>
+              </label>
             ))}
-          </RadioGroup>
+          </div>
           <div className="quiz-actions">
-            <Button color="success" type="submit" isDisabled={!selectedId || submitting}>
+            <Button className="upload-btn" type="submit" isDisabled={!selectedId || submitting}>
               {submitting ? '提交中...' : quiz.submission ? '重新提交' : '提交答案'}
             </Button>
           </div>

@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Button, Modal, ModalBody } from '@heroui/react';
 import { api } from '../api';
 
 export default function ScreenshotGallery() {
@@ -49,6 +48,7 @@ export default function ScreenshotGallery() {
   if (error) return <div className="center-msg admin-error">{error}</div>;
   if (!screenshots.length) return <div className="center-msg">暂无截图</div>;
 
+  // Group by company_id
   const groups = {};
   for (const s of screenshots) {
     if (!groups[s.company_id]) groups[s.company_id] = { name: s.company_name, shots: [] };
@@ -75,7 +75,7 @@ export default function ScreenshotGallery() {
                   <span className="thumb-name" title={s.original_name}>{s.original_name}</span>
                 </div>
                 <div className="thumb-actions">
-                  <Button color="danger" size="sm" onPress={() => handleDelete(s.id)}>删除</Button>
+                  <button className="admin-btn danger sm" onClick={() => handleDelete(s.id)}>删除</button>
                 </div>
               </div>
             ))}
@@ -83,52 +83,23 @@ export default function ScreenshotGallery() {
         </div>
       ))}
 
-      <Modal
-        isOpen={lightboxIdx >= 0}
-        onClose={() => setLightboxIdx(-1)}
-        size="full"
-        className="bg-black/80"
-        hideCloseButton
-      >
-        <ModalBody className="flex items-center justify-center p-0">
-          {lightbox && (
-            <>
-              <img
-                src={`/uploads/${lightbox.filename}`}
-                alt={lightbox.original_name}
-                className="max-w-[90vw] max-h-[85vh] object-contain rounded"
-              />
-              <Button
-                className="fixed top-4 right-4 z-10"
-                variant="flat"
-                size="sm"
-                onPress={() => setLightboxIdx(-1)}
-              >
-                ✕
-              </Button>
-              <Button
-                className="fixed left-4 top-1/2 -translate-y-1/2 z-10"
-                variant="flat"
-                size="sm"
-                onPress={goPrev}
-              >
-                ‹
-              </Button>
-              <Button
-                className="fixed right-4 top-1/2 -translate-y-1/2 z-10"
-                variant="flat"
-                size="sm"
-                onPress={goNext}
-              >
-                ›
-              </Button>
-              <span className="fixed bottom-6 left-1/2 -translate-x-1/2 px-5 py-2 rounded-lg bg-black/65 text-white font-semibold z-10">
-                {lightbox.company_name} · {lightboxIdx + 1} / {screenshots.length}
-              </span>
-            </>
-          )}
-        </ModalBody>
-      </Modal>
+      {lightbox && (
+        <dialog open className="lightbox" onClick={() => setLightboxIdx(-1)}>
+          <img
+            src={`/uploads/${lightbox.filename}`}
+            alt={lightbox.original_name}
+            onClick={e => e.stopPropagation()}
+          />
+          <button className="lightbox-close" onClick={() => setLightboxIdx(-1)}>✕</button>
+          <button className="lightbox-nav lightbox-prev" onClick={e => { e.stopPropagation(); goPrev(); }}>
+            ‹
+          </button>
+          <button className="lightbox-nav lightbox-next" onClick={e => { e.stopPropagation(); goNext(); }}>
+            ›
+          </button>
+          <span className="lightbox-counter">{lightbox.company_name} · {lightboxIdx + 1} / {screenshots.length}</span>
+        </dialog>
+      )}
     </div>
   );
 }

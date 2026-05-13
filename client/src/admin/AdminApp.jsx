@@ -1,5 +1,4 @@
 import { NavLink, Routes, Route, Navigate } from 'react-router-dom';
-import { Button } from '@heroui/react';
 import AdminDashboard from './AdminDashboard';
 import CompanyManager from './CompanyManager';
 import DeviceManager from './DeviceManager';
@@ -22,18 +21,14 @@ export default function AdminApp() {
     <div className="admin-layout">
       <aside className="admin-sidebar">
         <h2 className="sidebar-title">教师管理后台</h2>
-        <nav className="flex flex-col">
+        <nav>
           {TABS.map(t => (
-            <NavLink key={t.path} to={t.path} className="no-underline">
-              {({ isActive }) => (
-                <Button
-                  className={`sidebar-btn w-full justify-start ${isActive ? 'active' : ''}`}
-                  variant="light"
-                  size="sm"
-                >
-                  {t.label}
-                </Button>
-              )}
+            <NavLink
+              key={t.path}
+              to={t.path}
+              className={({ isActive }) => `sidebar-btn${isActive ? ' active' : ''}`}
+            >
+              {t.label}
             </NavLink>
           ))}
         </nav>
