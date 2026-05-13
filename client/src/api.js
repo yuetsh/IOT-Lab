@@ -86,9 +86,15 @@ export const api = {
       adminUpdateQuiz: (stage_key, title, prompt, options) => (
         adminRequest('PUT', `/quizzes/admin/${stage_key}`, { title, prompt, options })
       ),
+      adminDeleteQuiz: (stage_key) => (
+        adminRequest('DELETE', `/quizzes/admin/${stage_key}`)
+      ),
 
       adminGetAllScreenshots: () => adminRequest('GET', '/screenshots'),
       adminDeleteScreenshot: (id) => adminRequest('DELETE', `/screenshots/${id}`),
+
+      adminResetData: () => adminRequest('POST', '/admin/reset'),
+	      adminSeedData: () => adminRequest('POST', '/admin/seed'),
     };
   })(),
 };

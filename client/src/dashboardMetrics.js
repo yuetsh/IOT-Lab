@@ -24,16 +24,16 @@ export function formatCount(current, total) {
 }
 
 const DEVICE_PALETTE = [
-  '#14b8a6', // teal
-  '#f59e0b', // amber
-  '#6366f1', // indigo
-  '#ec4899', // pink
-  '#22c55e', // green
-  '#06b6d4', // cyan
-  '#f97316', // orange
-  '#8b5cf6', // violet
-  '#e11d48', // rose
-  '#3b82f6', // blue
+  'var(--device-color-0)', // teal
+  'var(--device-color-1)', // amber
+  'var(--device-color-2)', // indigo
+  'var(--device-color-3)', // pink
+  'var(--device-color-4)', // green
+  'var(--device-color-5)', // cyan
+  'var(--device-color-6)', // orange
+  'var(--device-color-7)', // violet
+  'var(--device-color-8)', // rose
+  'var(--device-color-9)', // blue
 ];
 
 export function deviceColor(deviceId, index) {

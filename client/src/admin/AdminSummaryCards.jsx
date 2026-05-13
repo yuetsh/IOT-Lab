@@ -1,17 +1,17 @@
 import './admin.css';
 
 const CARDS = [
-  ['company_count', '检测小组总数'],
-  ['average_completion_percent', '平均完成率', '%'],
-  ['complete_company_count', '全部完成'],
-  ['screenshot_count', '检测记录截图总数'],
+  ['average_completion_percent', '平均完成率', '%', 'primary'],
+  ['complete_company_count', '全部完成', '', 'complete'],
+  ['company_count', '检测小组总数', '', 'neutral'],
+  ['screenshot_count', '截图总数', '', 'accent'],
 ];
 
 export default function AdminSummaryCards({ summary }) {
   return (
     <section className="admin-summary-grid">
-      {CARDS.map(([key, label, suffix = '']) => (
-        <article key={key} className="admin-kpi-card">
+      {CARDS.map(([key, label, suffix = '', tone = 'neutral']) => (
+        <article key={key} className={`admin-kpi-card kpi-${tone}`}>
           <span>{label}</span>
           <strong>{summary[key] ?? 0}{suffix}</strong>
         </article>

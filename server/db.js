@@ -94,15 +94,6 @@ if (!deviceColumns.some(col => col.name === 'video_filename')) {
   db.exec('ALTER TABLE devices ADD COLUMN video_filename TEXT');
 }
 
-const seedQuizStage = db.prepare(`
-  INSERT OR IGNORE INTO quiz_questions (stage_key, activity_key, title, prompt, sort_order)
-  VALUES (?, ?, ?, '', ?)
-`);
-
-QUIZ_STAGES.forEach((stage, index) => {
-  seedQuizStage.run(stage.stage_key, stage.activity_key, stage.title, index);
-});
-
 // ─── Prepared statements ────────────────────────────────────────────────────
 
 const stmts = {
@@ -210,6 +201,7 @@ const stmts = {
     INSERT INTO quiz_questions (stage_key, activity_key, title, prompt, sort_order)
     VALUES (?, ?, ?, ?, ?)
   `),
+  deleteQuizQuestion: db.prepare('DELETE FROM quiz_questions WHERE stage_key = ?'),
   deleteQuizOptionsForQuestion: db.prepare('DELETE FROM quiz_options WHERE question_id = ?'),
   deleteQuizSubmissionsForQuestion: db.prepare('DELETE FROM quiz_submissions WHERE question_id = ?'),
   createQuizOption: db.prepare(`
@@ -501,6 +493,19 @@ function submitQuizAnswer(company_id, stage_key, option_id) {
   };
 }
 
+const deleteQuizQuestionTransaction = db.transaction((stage_key) => {
+  const question = stmts.getQuizQuestionByStage.get(stage_key);
+  if (!question) return false;
+  stmts.deleteQuizSubmissionsForQuestion.run(question.id);
+  stmts.deleteQuizOptionsForQuestion.run(question.id);
+  stmts.deleteQuizQuestion.run(stage_key);
+  return true;
+});
+
+function deleteQuizQuestion(stage_key) {
+  return deleteQuizQuestionTransaction(stage_key);
+}
+
 // ─── Exports ─────────────────────────────────────────────────────────────────
 
 module.exports = {
@@ -541,5 +546,6 @@ module.exports = {
   getAdminQuizStages,
   createQuizQuestion,
   saveQuizQuestion,
+  deleteQuizQuestion,
   submitQuizAnswer,
 };

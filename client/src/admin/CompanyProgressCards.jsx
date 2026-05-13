@@ -12,12 +12,13 @@ export default function CompanyProgressCards({ companies }) {
 
   return (
     <section className="company-card-grid">
-      {companies.map(company => {
+      {[...companies].sort((a, b) => (b.completion_percent ?? 0) - (a.completion_percent ?? 0)).map((company, idx) => {
         const percent = clampPercent(company.completion_percent);
         return (
           <article key={company.company_id} className={`company-progress-card ${statusTone(company.status)}`}>
             <header>
-              <div>
+              <div className="company-header-left">
+                <span className="company-rank">#{idx + 1}</span>
                 <h3>{company.company_name}</h3>
                 <p>{statusLabel(company.status)} · 未完成 {company.unfinished_items} 项 · 检测记录截图 {company.screenshot_count} 张</p>
               </div>
@@ -33,7 +34,7 @@ export default function CompanyProgressCards({ companies }) {
                 return (
                   <div key={device.device_id}>
                     <div className="company-device-summary">
-                      <span style={{ color: devColor }}>{device.device_name}</span>
+                      <span style={{ color: devColor, fontWeight: 600 }}>{device.device_name}</span>
                       <div className="mini-track">
                         <i style={{ width: `${devicePercent}%`, background: devColor }} />
                       </div>

@@ -105,6 +105,19 @@ router.put('/admin/:stage_key', adminAuth, async (req, res) => {
   }
 });
 
+// DELETE /admin/:stage_key [adminAuth]
+router.delete('/admin/:stage_key', adminAuth, async (req, res) => {
+  try {
+    if (!isKnownQuestion(req.params.stage_key)) {
+      return res.status(404).json({ error: '检测题不存在' });
+    }
+    db.deleteQuizQuestion(req.params.stage_key);
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 router.validateQuizPayload = validateQuizPayload;
 
 module.exports = router;

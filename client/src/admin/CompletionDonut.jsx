@@ -17,7 +17,7 @@ export default function CompletionDonut({ data }) {
   }).join(', ');
 
   return (
-    <section className="admin-chart-card">
+    <section className="admin-chart-card completion-card">
       <div className="chart-heading">
         <span>完成状态占比</span>
         <strong>{total} 组</strong>

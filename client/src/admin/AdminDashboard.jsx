@@ -27,18 +27,22 @@ export default function AdminDashboard() {
 
   return (
     <div className="admin-dashboard">
-      <header className="admin-page-header">
+      <header className="dashboard-hero">
         <div>
           <p>物联网设备检测课程</p>
           <h1>各检测小组完成情况</h1>
+          <span>课堂展示看板 · 实时查看检测进度、截图提交和设备完成短板</span>
         </div>
       </header>
 
       <AdminSummaryCards summary={overview.summary} />
 
-      <div className="admin-chart-grid">
+      <div className="dashboard-showcase">
         <CompletionDonut data={overview.status_distribution} />
         <CompanyRankChart data={overview.company_rankings} />
+      </div>
+
+      <div className="dashboard-support-grid">
         <ScreenshotBarChart data={overview.screenshot_chart} />
         <DeviceBottleneckChart data={overview.device_bottlenecks} />
       </div>

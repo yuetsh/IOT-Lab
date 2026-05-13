@@ -18,6 +18,7 @@ app.use('/api/checklist-items', require('./routes/checklistItems'));
 app.use('/api/progress', require('./routes/progress'));
 app.use('/api/screenshots', require('./routes/screenshots'));
 app.use('/api/quizzes', require('./routes/quizzes'));
+app.use('/api/admin', require('./routes/admin'));
 
 // Serve uploaded files
 app.use('/uploads', express.static(UPLOAD_DIR));

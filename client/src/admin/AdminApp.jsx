@@ -5,6 +5,7 @@ import DeviceManager from './DeviceManager';
 import ProgressOverview from './ProgressOverview';
 import ScreenshotGallery from './ScreenshotGallery';
 import QuizManager from './QuizManager';
+import SiteSettings from './SiteSettings';
 import './admin.css';
 
 const TABS = [
@@ -14,6 +15,7 @@ const TABS = [
   { path: '/admin/quizzes', label: '检测管理' },
   { path: '/admin/progress', label: '检测进度' },
   { path: '/admin/screenshots', label: '检测记录' },
+  { path: '/admin/settings', label: '网站设置' },
 ];
 
 export default function AdminApp() {
@@ -42,6 +44,7 @@ export default function AdminApp() {
           <Route path="quizzes" element={<QuizManager />} />
           <Route path="progress" element={<ProgressOverview />} />
           <Route path="screenshots" element={<ScreenshotGallery />} />
+          <Route path="settings" element={<SiteSettings />} />
         </Routes>
       </main>
     </div>

@@ -171,17 +171,9 @@ function QuizPanelGrid({ companyId, quizzes, onSubmitted }) {
 }
 
 function findQuizzes(quizzes = [], activityKey) {
-  const activityQuizzes = quizzes.filter(quiz => (quiz.activity_key || quiz.stage_key) === activityKey);
-  if (activityQuizzes.length) return activityQuizzes;
-
-  return [{
-    stage_key: activityKey,
-    activity_key: activityKey,
-    title: activityKey === 'check1' ? '检测一' : '检测二',
-    prompt: '',
-    options: [],
-    submission: null,
-  }];
+  return quizzes.filter(quiz => (
+    (quiz.activity_key || quiz.stage_key) === activityKey && quiz.options.length > 0
+  ));
 }
 
 function updateSummaryItem(summary, itemId, checked) {

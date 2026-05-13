@@ -120,6 +120,17 @@ export default function QuizManager() {
     }
   }
 
+  async function handleDelete(form) {
+    if (!confirm(`确定要删除检测题「${form.title}」吗？此操作不可恢复。`)) return;
+    setError('');
+    try {
+      await api.adminDeleteQuiz(form.stage_key);
+      setForms(prev => prev.filter(item => item.stage_key !== form.stage_key));
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+
   function handleCreate(activity) {
     setForms(prev => [...prev, {
       stage_key: `__new__${activity.activity_key}__${Date.now()}`,
@@ -214,6 +225,9 @@ export default function QuizManager() {
               <button className="admin-btn primary" type="submit">
                 保存检测题
               </button>
+              <button className="admin-btn danger" type="button" onClick={() => handleDelete(form)}>
+                  删除检测题
+                </button>
             </div>
               </form>
             ))}

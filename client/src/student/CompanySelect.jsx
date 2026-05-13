@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Alert, Button, Spinner } from '@heroui/react';
+import { Alert, Spinner } from '@heroui/react';
 import { api } from '../api';
 import './student.css';
 
@@ -50,10 +50,17 @@ export default function CompanySelect({ onSelect }) {
       <h2 className="page-title">请选择检测小组</h2>
       {companies.length === 0 && <p className="empty-msg">暂无检测小组，请联系教师添加</p>}
       <div className="company-grid">
-        {companies.map(c => (
-          <Button key={c.id} className="company-card" variant="outline" onPress={() => onSelect(c)}>
-            {c.name}
-          </Button>
+        {companies.map((c, index) => (
+          <button
+            key={c.id}
+            type="button"
+            className="company-card"
+            onClick={() => onSelect(c)}
+            aria-label={`选择${c.name}`}
+          >
+            <span className="company-card-index">{String(index + 1).padStart(2, '0')}</span>
+            <span className="company-card-name">{c.name}</span>
+          </button>
         ))}
       </div>
     </div>
