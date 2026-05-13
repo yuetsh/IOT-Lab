@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const Database = require('better-sqlite3');
 const { buildCompanySummary, buildAdminOverview } = require('./dashboardSummary');
+const { QUIZ_STAGES, buildQuizStages } = require('./quizSummary');
 
 // Ensure data directory exists
 const dataDir = path.join(__dirname, '../data');
@@ -53,7 +54,54 @@ db.exec(`
     original_name TEXT,
     uploaded_at TEXT DEFAULT (datetime('now'))
   );
+
+  CREATE TABLE IF NOT EXISTS quiz_questions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    stage_key TEXT NOT NULL UNIQUE,
+    activity_key TEXT NOT NULL DEFAULT '',
+    title TEXT NOT NULL,
+    prompt TEXT NOT NULL DEFAULT '',
+    sort_order INTEGER DEFAULT 0
+  );
+
+  CREATE TABLE IF NOT EXISTS quiz_options (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    question_id INTEGER NOT NULL REFERENCES quiz_questions(id) ON DELETE CASCADE,
+    label TEXT NOT NULL,
+    is_correct INTEGER NOT NULL DEFAULT 0,
+    sort_order INTEGER DEFAULT 0
+  );
+
+  CREATE TABLE IF NOT EXISTS quiz_submissions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    company_id INTEGER NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+    question_id INTEGER NOT NULL REFERENCES quiz_questions(id) ON DELETE CASCADE,
+    selected_option_id INTEGER REFERENCES quiz_options(id) ON DELETE SET NULL,
+    is_correct INTEGER NOT NULL DEFAULT 0,
+    submitted_at TEXT DEFAULT (datetime('now')),
+    UNIQUE(company_id, question_id)
+  );
 `);
+
+const quizQuestionColumns = db.prepare('PRAGMA table_info(quiz_questions)').all();
+if (!quizQuestionColumns.some(column => column.name === 'activity_key')) {
+  db.exec("ALTER TABLE quiz_questions ADD COLUMN activity_key TEXT NOT NULL DEFAULT ''");
+  db.exec("UPDATE quiz_questions SET activity_key = stage_key WHERE activity_key = ''");
+}
+
+const deviceColumns = db.prepare('PRAGMA table_info(devices)').all();
+if (!deviceColumns.some(col => col.name === 'video_filename')) {
+  db.exec('ALTER TABLE devices ADD COLUMN video_filename TEXT');
+}
+
+const seedQuizStage = db.prepare(`
+  INSERT OR IGNORE INTO quiz_questions (stage_key, activity_key, title, prompt, sort_order)
+  VALUES (?, ?, ?, '', ?)
+`);
+
+QUIZ_STAGES.forEach((stage, index) => {
+  seedQuizStage.run(stage.stage_key, stage.activity_key, stage.title, index);
+});
 
 // ─── Prepared statements ────────────────────────────────────────────────────
 
@@ -70,6 +118,8 @@ const stmts = {
   createDevice: db.prepare('INSERT INTO devices (name, sort_order) VALUES (?, ?)'),
   updateDevice: db.prepare('UPDATE devices SET name = ?, sort_order = ? WHERE id = ?'),
   deleteDevice: db.prepare('DELETE FROM devices WHERE id = ?'),
+  updateDeviceVideo: db.prepare('UPDATE devices SET video_filename = ? WHERE id = ?'),
+  clearDeviceVideo: db.prepare('UPDATE devices SET video_filename = NULL WHERE id = ?'),
 
   // Checklist items
   getItemsForDevice: db.prepare(
@@ -135,6 +185,45 @@ const stmts = {
     ORDER BY s.uploaded_at DESC
   `),
   deleteScreenshot: db.prepare('DELETE FROM screenshots WHERE id = ? RETURNING filename'),
+
+  // Quizzes
+  getQuizQuestions: db.prepare('SELECT * FROM quiz_questions ORDER BY sort_order, id'),
+  getQuizQuestionByStage: db.prepare('SELECT * FROM quiz_questions WHERE stage_key = ?'),
+  getQuizMaxSortForActivity: db.prepare('SELECT COALESCE(MAX(sort_order), -1) AS max_sort FROM quiz_questions WHERE activity_key = ?'),
+  getQuizOptions: db.prepare('SELECT * FROM quiz_options ORDER BY question_id, sort_order, id'),
+  getQuizSubmissionsForCompany: db.prepare(`
+    SELECT question_id, selected_option_id, is_correct, submitted_at
+    FROM quiz_submissions
+    WHERE company_id = ?
+  `),
+  getQuizOption: db.prepare('SELECT * FROM quiz_options WHERE id = ?'),
+  upsertQuizQuestion: db.prepare(`
+    INSERT INTO quiz_questions (stage_key, activity_key, title, prompt, sort_order)
+    VALUES (?, ?, ?, ?, ?)
+    ON CONFLICT(stage_key) DO UPDATE SET
+      activity_key = excluded.activity_key,
+      title = excluded.title,
+      prompt = excluded.prompt,
+      sort_order = excluded.sort_order
+  `),
+  createQuizQuestion: db.prepare(`
+    INSERT INTO quiz_questions (stage_key, activity_key, title, prompt, sort_order)
+    VALUES (?, ?, ?, ?, ?)
+  `),
+  deleteQuizOptionsForQuestion: db.prepare('DELETE FROM quiz_options WHERE question_id = ?'),
+  deleteQuizSubmissionsForQuestion: db.prepare('DELETE FROM quiz_submissions WHERE question_id = ?'),
+  createQuizOption: db.prepare(`
+    INSERT INTO quiz_options (question_id, label, is_correct, sort_order)
+    VALUES (?, ?, ?, ?)
+  `),
+  upsertQuizSubmission: db.prepare(`
+    INSERT INTO quiz_submissions (company_id, question_id, selected_option_id, is_correct)
+    VALUES (?, ?, ?, ?)
+    ON CONFLICT(company_id, question_id) DO UPDATE SET
+      selected_option_id = excluded.selected_option_id,
+      is_correct = excluded.is_correct,
+      submitted_at = datetime('now')
+  `),
 };
 
 // ─── Helper functions ────────────────────────────────────────────────────────
@@ -182,6 +271,16 @@ function updateDevice(id, name, sort_order) {
 
 function deleteDevice(id) {
   return stmts.deleteDevice.run(id);
+}
+
+function setDeviceVideo(id, filename) {
+  stmts.updateDeviceVideo.run(filename, id);
+  return stmts.getDevice.get(id);
+}
+
+function clearDeviceVideo(id) {
+  stmts.clearDeviceVideo.run(id);
+  return stmts.getDevice.get(id);
 }
 
 // Checklist Items
@@ -256,12 +355,16 @@ function getCompanyDashboardSummary(company_id) {
   const company = getCompany(company_id);
   if (!company) return null;
 
-  return buildCompanySummary({
+  const summary = buildCompanySummary({
     company,
     devices: getDevicesWithItems(),
     completedItemIds: stmts.getProgressRowsForCompany.all(company_id).map(row => row.checklist_item_id),
     screenshots: getScreenshotsForCompany(company_id),
   });
+  return {
+    ...summary,
+    quizzes: getQuizStagesForCompany(company_id),
+  };
 }
 
 function getAdminOverview() {
@@ -300,6 +403,97 @@ function deleteScreenshot(id) {
   return row ? row.filename : null;
 }
 
+// Quizzes
+function getOptionsByQuestion() {
+  const optionsByQuestion = new Map();
+  for (const option of stmts.getQuizOptions.all()) {
+    const questionId = Number(option.question_id);
+    if (!optionsByQuestion.has(questionId)) {
+      optionsByQuestion.set(questionId, []);
+    }
+    optionsByQuestion.get(questionId).push(option);
+  }
+  return optionsByQuestion;
+}
+
+function getQuizStagesForCompany(company_id) {
+  return buildQuizStages({
+    questions: stmts.getQuizQuestions.all(),
+    optionsByQuestion: getOptionsByQuestion(),
+    submissions: stmts.getQuizSubmissionsForCompany.all(company_id),
+    includeAnswers: false,
+  });
+}
+
+function getAdminQuizStages() {
+  return buildQuizStages({
+    questions: stmts.getQuizQuestions.all(),
+    optionsByQuestion: getOptionsByQuestion(),
+    submissions: [],
+    includeAnswers: true,
+  });
+}
+
+function getKnownActivity(activityKey) {
+  return QUIZ_STAGES.find(stage => stage.activity_key === activityKey);
+}
+
+function createQuizStageKey(activityKey) {
+  return `${activityKey}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+const saveQuizQuestionTransaction = db.transaction((stage_key, activity_key, title, prompt, options) => {
+  const stageIndex = QUIZ_STAGES.findIndex(stage => stage.stage_key === stage_key);
+  const sortOrder = stageIndex >= 0
+    ? stageIndex
+    : Number(stmts.getQuizQuestionByStage.get(stage_key)?.sort_order ?? 0);
+  stmts.upsertQuizQuestion.run(stage_key, activity_key, title, prompt, sortOrder);
+  const question = stmts.getQuizQuestionByStage.get(stage_key);
+  stmts.deleteQuizSubmissionsForQuestion.run(question.id);
+  stmts.deleteQuizOptionsForQuestion.run(question.id);
+  options.forEach((option, index) => {
+    stmts.createQuizOption.run(question.id, option.label, option.is_correct ? 1 : 0, index);
+  });
+  return question;
+});
+
+function saveQuizQuestion(stage_key, title, prompt, options) {
+  const existing = stmts.getQuizQuestionByStage.get(stage_key);
+  saveQuizQuestionTransaction(stage_key, existing?.activity_key || stage_key, title, prompt, options);
+  return getAdminQuizStages().find(stage => stage.stage_key === stage_key);
+}
+
+const createQuizQuestionTransaction = db.transaction((activity_key, title, prompt, options) => {
+  const stageKey = createQuizStageKey(activity_key);
+  const maxSort = stmts.getQuizMaxSortForActivity.get(activity_key).max_sort;
+  stmts.createQuizQuestion.run(stageKey, activity_key, title, prompt, Number(maxSort) + 1);
+  const question = stmts.getQuizQuestionByStage.get(stageKey);
+  options.forEach((option, index) => {
+    stmts.createQuizOption.run(question.id, option.label, option.is_correct ? 1 : 0, index);
+  });
+  return question;
+});
+
+function createQuizQuestion(activity_key, title, prompt, options) {
+  if (!getKnownActivity(activity_key)) return null;
+  const question = createQuizQuestionTransaction(activity_key, title, prompt, options);
+  return getAdminQuizStages().find(stage => stage.stage_key === question.stage_key);
+}
+
+function submitQuizAnswer(company_id, stage_key, option_id) {
+  const question = stmts.getQuizQuestionByStage.get(stage_key);
+  if (!question || !question.prompt) return null;
+
+  const option = stmts.getQuizOption.get(option_id);
+  if (!option || Number(option.question_id) !== Number(question.id)) return null;
+
+  stmts.upsertQuizSubmission.run(company_id, question.id, option.id, option.is_correct ? 1 : 0);
+  return {
+    selected_option_id: option.id,
+    is_correct: Boolean(option.is_correct),
+  };
+}
+
 // ─── Exports ─────────────────────────────────────────────────────────────────
 
 module.exports = {
@@ -315,6 +509,8 @@ module.exports = {
   createDevice,
   updateDevice,
   deleteDevice,
+  setDeviceVideo,
+  clearDeviceVideo,
   // Checklist Items
   createChecklistItem,
   updateChecklistItem,
@@ -333,4 +529,10 @@ module.exports = {
   getScreenshots,
   getScreenshotsForCompany,
   deleteScreenshot,
+  // Quizzes
+  getQuizStagesForCompany,
+  getAdminQuizStages,
+  createQuizQuestion,
+  saveQuizQuestion,
+  submitQuizAnswer,
 };
