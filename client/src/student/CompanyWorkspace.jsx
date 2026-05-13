@@ -5,8 +5,9 @@ import './student.css';
 
 export default function CompanyWorkspace({ company, onChangeCompany }) {
   const [devices, setDevices] = useState([]);
-  const [checkedIds, setCheckedIds] = useState(new Set()); // Set of checklist_item_ids
+  const [checkedIds, setCheckedIds] = useState(new Set());
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     Promise.all([api.getDevices(), api.getProgress(company.id)])
@@ -14,6 +15,7 @@ export default function CompanyWorkspace({ company, onChangeCompany }) {
         setDevices(devs);
         setCheckedIds(new Set(progressIds));
       })
+      .catch(e => setError(e.message))
       .finally(() => setLoading(false));
   }, [company.id]);
 
@@ -41,6 +43,7 @@ export default function CompanyWorkspace({ company, onChangeCompany }) {
   }
 
   if (loading) return <div className="center-msg">加载中...</div>;
+  if (error) return <div className="center-msg error">{error}</div>;
 
   return (
     <div className="page">
