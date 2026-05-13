@@ -70,19 +70,12 @@ export default function CompanyWorkspace({ company, onChangeCompany }) {
         </div>
       </section>
 
-      {devices.length > 0 && (
-        <section className="workspace-section">
-          <h2 className="section-heading">截图上传</h2>
-          <div className="screenshot-section">
-            {devices.map(device => (
-              <div key={device.id} className="screenshot-row">
-                <span className="screenshot-device-label">{device.name}</span>
-                <ScreenshotUpload companyId={company.id} deviceId={device.id} />
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
+      <section className="workspace-section">
+        <h2 className="section-heading">截图上传</h2>
+        <div className="screenshot-standalone">
+          <ScreenshotUpload companyId={company.id} />
+        </div>
+      </section>
     </div>
   );
 }
