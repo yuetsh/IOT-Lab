@@ -6,10 +6,10 @@ import ScreenshotGallery from './ScreenshotGallery';
 import './admin.css';
 
 const TABS = [
-  { path: 'companies', label: '公司管理' },
-  { path: 'devices', label: '设备管理' },
-  { path: 'progress', label: '完成情况' },
-  { path: 'screenshots', label: '截图管理' },
+  { path: '/admin/companies', label: '公司管理' },
+  { path: '/admin/devices', label: '设备管理' },
+  { path: '/admin/progress', label: '完成情况' },
+  { path: '/admin/screenshots', label: '截图管理' },
 ];
 
 export default function AdminApp() {
