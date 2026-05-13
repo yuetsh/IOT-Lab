@@ -2,7 +2,7 @@
 FROM node:26-alpine AS client-builder
 WORKDIR /app
 COPY client/package*.json ./
-RUN npm install
+RUN npm config set registry https://registry.npmmirror.com && npm install
 COPY client/ .
 RUN npm run build
 
@@ -11,7 +11,7 @@ FROM node:26-alpine AS server-deps
 RUN apk add --no-cache python3 make g++
 WORKDIR /app
 COPY server/package*.json ./
-RUN npm install --omit=dev
+RUN npm config set registry https://registry.npmmirror.com && npm install --omit=dev
 
 # Stage 3: Production runtime
 FROM node:26-alpine
